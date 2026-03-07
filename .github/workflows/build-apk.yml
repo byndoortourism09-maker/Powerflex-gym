@@ -33,6 +33,7 @@ jobs:
           mkdir -p gradle/wrapper
           curl -fsSL "https://github.com/gradle/gradle/raw/v8.2.1/gradle/wrapper/gradle-wrapper.jar" \
             -o gradle/wrapper/gradle-wrapper.jar
+          chmod +x gradle/wrapper/gradle-wrapper.jar
           chmod +x gradlew
 
       - name: Build Debug APK
