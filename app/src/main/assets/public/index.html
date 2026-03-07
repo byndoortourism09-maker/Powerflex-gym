@@ -1,1 +1,1612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#0d0d0d">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="PowerFlex">
+<title>PowerFlex Gym</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+/* ═══════════════════════════════════
+   RESET
+═══════════════════════════════════ */
+*, *::before, *::after {
+  margin: 0; padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
 
+/* ═══════════════════════════════════
+   VARIABLES
+═══════════════════════════════════ */
+:root {
+  --bg:  #0d0d0d;
+  --s1:  #161616;
+  --s2:  #1e1e1e;
+  --s3:  #282828;
+  --br:  #2e2e2e;
+  --ac:  #ff4500;
+  --ac2: #ff7300;
+  --aglow: rgba(255,69,0,.3);
+  --tx:  #f0f0f0;
+  --tx2: #999;
+  --tx3: #555;
+  --gn:  #00e676;
+  --gnb: rgba(0,230,118,.1);
+  --gnr: rgba(0,230,118,.3);
+  --rd:  #ff3d57;
+  --rdb: rgba(255,61,87,.1);
+  --rdr: rgba(255,61,87,.3);
+  --or:  #ffab00;
+  --orb: rgba(255,171,0,.1);
+  --orr: rgba(255,171,0,.3);
+  --r:   12px;
+  --rs:  8px;
+  --HDR: 56px;
+  --NAV: 60px;
+}
+
+/* ═══════════════════════════════════
+   ROOT LAYOUT — THE FIX
+   Use 100dvh on html/body, simple flex.
+   NO position:fixed on body.
+   NO overflow:hidden on pages container.
+   Pages use display:none / display:flex — no absolute positioning.
+═══════════════════════════════════ */
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--tx);
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+/* The outermost shell */
+#shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh; /* dynamic viewport — Chrome respects this */
+  overflow: hidden;
+  background: var(--bg);
+}
+
+/* ── HEADER ── */
+#hdr {
+  flex-shrink: 0;
+  height: var(--HDR);
+  background: var(--s1);
+  border-bottom: 1px solid var(--br);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  z-index: 10;
+}
+.hlogo { display:flex; align-items:center; gap:10px; }
+.lmark {
+  width:36px; height:36px; border-radius:9px;
+  background: linear-gradient(135deg,var(--ac),var(--ac2));
+  display:flex; align-items:center; justify-content:center;
+  box-shadow: 0 0 14px var(--aglow); flex-shrink:0;
+}
+.lmark svg { width:20px; height:20px; fill:white; }
+.lname { font-weight:900; font-size:17px; letter-spacing:.5px; line-height:1; }
+.ltag  { font-size:9px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:var(--tx3); margin-top:1px; }
+.hbtns { display:flex; gap:6px; }
+.ibtn  {
+  width:36px; height:36px; border-radius:var(--rs);
+  border:1px solid var(--br); background:var(--s2);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; font-size:16px; color:var(--tx2);
+  -webkit-tap-highlight-color: transparent;
+}
+.ibtn:active { background:var(--s3); }
+
+/* ── PAGES WRAPPER ── */
+#pages {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ── INDIVIDUAL PAGES ──
+   KEY FIX: pages are absolute inside #pages.
+   #pages has a fixed pixel height (shell - hdr - nav).
+   Pages don't overlap nav because nav is OUTSIDE #pages.
+*/
+.page {
+  display: none;
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 12px 20px;
+  background: var(--bg);
+}
+.page.active { display: flex; }
+
+/* ── BOTTOM NAV ──
+   KEY FIX: nav is a direct child of #shell (flex column),
+   NOT inside #pages. So it's always below pages, never overlapped.
+*/
+#nav {
+  flex-shrink: 0;
+  height: var(--NAV);
+  background: var(--s1);
+  border-top: 2px solid var(--br);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  z-index: 10;
+  /* safe area for gesture nav bar */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.nb {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 6px 4px 4px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: var(--tx3);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  font-family: inherit;
+  position: relative;
+  /* large tap target */
+  min-height: 44px;
+  -webkit-tap-highlight-color: transparent;
+}
+.nb .ni { font-size: 20px; line-height: 1.2; display: block; }
+.nb.active { color: var(--ac); }
+.nb.active::before {
+  content: '';
+  position: absolute; top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 30px; height: 3px;
+  background: var(--ac);
+  border-radius: 0 0 3px 3px;
+}
+.nbadge {
+  position: absolute; top: 4px; right: calc(50% - 19px);
+  background: var(--rd); color: white;
+  font-size: 9px; font-weight: 700;
+  min-width: 15px; height: 15px;
+  border-radius: 8px; padding: 0 3px;
+  display: none; align-items: center; justify-content: center;
+}
+
+/* ── FAB ── */
+#fab {
+  position: fixed;
+  bottom: calc(var(--NAV) + env(safe-area-inset-bottom,0px) + 12px);
+  right: 14px;
+  width: 52px; height: 52px; border-radius: 50%;
+  background: linear-gradient(135deg,var(--ac),var(--ac2));
+  border: none; color: white; font-size: 28px;
+  display: none; align-items: center; justify-content: center;
+  cursor: pointer; z-index: 20;
+  box-shadow: 0 4px 18px var(--aglow);
+  -webkit-tap-highlight-color: transparent;
+}
+#fab:active { transform: scale(.92); }
+#fab.show { display: flex; }
+
+/* ═══════════════════════════════════
+   SHARED COMPONENTS
+═══════════════════════════════════ */
+::-webkit-scrollbar { width: 2px; }
+::-webkit-scrollbar-thumb { background: var(--s3); border-radius: 2px; }
+
+.shead {
+  display:flex; align-items:center; justify-content:space-between;
+  padding-bottom:8px; border-bottom:1px solid var(--br);
+  flex-shrink: 0;
+}
+.stitle {
+  font-weight:700; font-size:11px; letter-spacing:2px;
+  text-transform:uppercase; color:var(--tx3);
+  display:flex; align-items:center; gap:6px;
+}
+.scnt {
+  background:var(--s2); border:1px solid var(--br);
+  font-size:10px; font-weight:700; color:var(--tx3);
+  padding:1px 7px; border-radius:20px;
+}
+
+/* BUTTONS */
+.btn {
+  display:inline-flex; align-items:center; justify-content:center;
+  gap:6px; padding:11px 16px; border-radius:var(--rs);
+  border:none; font-family:inherit; font-size:13px; font-weight:600;
+  cursor:pointer; white-space:nowrap; flex-shrink:0;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn:active { opacity:.75; }
+.bfull { width:100%; }
+.bpri  { background:linear-gradient(135deg,var(--ac),var(--ac2)); color:white; box-shadow:0 2px 10px var(--aglow); }
+.bghost{ background:var(--s2); border:1px solid var(--br); color:var(--tx2); }
+.bgn   { background:var(--gnb); border:1px solid var(--gnr); color:var(--gn); }
+.brd   { background:var(--rdb); border:1px solid var(--rdr); color:var(--rd); }
+.bor   { background:var(--orb); border:1px solid var(--orr); color:var(--or); }
+.bsm   { padding:7px 11px; font-size:12px; border-radius:6px; }
+
+/* BADGES */
+.badge { display:inline-flex; align-items:center; gap:3px; padding:3px 8px; border-radius:20px; font-size:10px; font-weight:700; }
+.bgn2 { background:var(--gnb); color:var(--gn); border:1px solid var(--gnr); }
+.brd2 { background:var(--rdb); color:var(--rd); border:1px solid var(--rdr); }
+.bor2 { background:var(--orb); color:var(--or); border:1px solid var(--orr); }
+.bgr2 { background:var(--s2); color:var(--tx2); border:1px solid var(--br); }
+
+/* CARDS */
+.card { background:var(--s1); border:1px solid var(--br); border-radius:var(--r); overflow:hidden; }
+
+/* FORM FIELDS */
+.fg   { display:flex; flex-direction:column; gap:4px; }
+.fl   { font-size:11px; font-weight:700; color:var(--tx3); text-transform:uppercase; letter-spacing:.7px; }
+.fi, .fsel {
+  background:var(--s2); border:1px solid var(--br); border-radius:var(--rs);
+  padding:11px 12px; color:var(--tx); font-size:14px; outline:none; width:100%;
+  -webkit-appearance:none; appearance:none;
+}
+.fi:focus, .fsel:focus { border-color:var(--ac); }
+.fi::placeholder { color:var(--tx3); }
+
+/* SEARCH */
+.sw { position:relative; flex-shrink:0; }
+.si { position:absolute; left:11px; top:50%; transform:translateY(-50%); color:var(--tx3); font-size:14px; pointer-events:none; }
+.sinput {
+  width:100%; background:var(--s2); border:1px solid var(--br); border-radius:var(--rs);
+  padding:10px 12px 10px 36px; color:var(--tx); font-size:14px; outline:none;
+}
+.sinput:focus { border-color:var(--ac); }
+.sinput::placeholder { color:var(--tx3); }
+
+/* CHIPS */
+.chips { display:flex; gap:6px; overflow-x:auto; padding-bottom:2px; flex-shrink:0; }
+.chips::-webkit-scrollbar { display:none; }
+.chip {
+  padding:6px 13px; border-radius:20px; white-space:nowrap;
+  font-size:12px; font-weight:600; cursor:pointer;
+  border:1px solid var(--br); background:var(--s2); color:var(--tx3);
+  flex-shrink:0; -webkit-tap-highlight-color:transparent;
+}
+.chip.active { background:var(--ac); color:white; border-color:var(--ac); }
+
+/* EMPTY STATE */
+.empty {
+  display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:8px; padding:36px 20px;
+  color:var(--tx3); text-align:center;
+}
+.eico { font-size:42px; opacity:.3; }
+.etxt { font-size:13px; line-height:1.6; }
+
+/* TOAST */
+#toast {
+  position:fixed;
+  bottom: calc(var(--NAV) + env(safe-area-inset-bottom,0px) + 8px);
+  left:50%; transform:translateX(-50%) translateY(10px);
+  background:var(--s3); color:var(--tx);
+  padding:9px 18px; border-radius:22px; font-size:13px; font-weight:500;
+  z-index:500; opacity:0; pointer-events:none; transition:all .22s;
+  white-space:nowrap; max-width:90vw;
+  box-shadow:0 4px 16px rgba(0,0,0,.5);
+}
+#toast.on { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* OVERLAY / DRAWER */
+.ov {
+  position:fixed; inset:0;
+  background:rgba(0,0,0,.78);
+  z-index:200; opacity:0; pointer-events:none;
+  transition:opacity .2s;
+  display:flex; flex-direction:column; justify-content:flex-end;
+}
+.ov.open { opacity:1; pointer-events:all; }
+.drw {
+  background:var(--s1); border-radius:20px 20px 0 0;
+  max-height:92dvh; overflow-y:auto;
+  transform:translateY(100%);
+  transition:transform .28s cubic-bezier(.32,1.2,.6,1);
+  padding-bottom:calc(env(safe-area-inset-bottom,0px) + 8px);
+}
+.ov.open .drw { transform:translateY(0); }
+.dpip { width:36px; height:4px; background:var(--s3); border-radius:2px; margin:10px auto 2px; }
+.dhd {
+  padding:6px 16px 12px; display:flex; align-items:center;
+  justify-content:space-between; border-bottom:1px solid var(--br);
+  position:sticky; top:0; background:var(--s1); z-index:2;
+}
+.dtit { font-weight:800; font-size:19px; }
+.dbdy { padding:16px; display:flex; flex-direction:column; gap:13px; }
+.dft  { padding:12px 16px; border-top:1px solid var(--br); display:flex; gap:8px; }
+
+/* CONFIRM DIALOG */
+#cbg  { position:fixed; inset:0; background:rgba(0,0,0,.72); z-index:300; display:none; }
+#cbox {
+  position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+  background:var(--s1); border:1px solid var(--br); border-radius:var(--r);
+  padding:20px; z-index:301; width:min(310px,90vw);
+  display:none; flex-direction:column; gap:14px;
+  box-shadow:0 8px 30px rgba(0,0,0,.6);
+}
+#cbg.on { display:block; }
+#cbox.on { display:flex; }
+#ctit { font-weight:800; font-size:18px; }
+#cmsg { font-size:13px; color:var(--tx2); line-height:1.6; white-space:pre-line; }
+#cbtns { display:flex; gap:8px; }
+
+/* ═══════════════════════════════════
+   DASHBOARD STATS
+═══════════════════════════════════ */
+.sgrid { display:grid; grid-template-columns:1fr 1fr; gap:10px; flex-shrink:0; }
+.sc {
+  background:var(--s1); border:1px solid var(--br);
+  border-radius:var(--r); padding:13px 12px;
+  cursor:pointer; position:relative; overflow:hidden;
+  -webkit-tap-highlight-color:transparent;
+}
+.sc:active { background:var(--s2); }
+.sc::after {
+  content:''; position:absolute; top:0; left:0; right:0;
+  height:3px; border-radius:var(--r) var(--r) 0 0;
+}
+.sc-tot::after { background:linear-gradient(90deg,var(--ac),var(--ac2)); }
+.sc-pad::after { background:var(--gn); }
+.sc-exp::after { background:var(--or); }
+.sc-xpd::after { background:var(--rd); }
+.snum { font-weight:900; font-size:36px; line-height:1; margin-top:5px; }
+.sc-tot .snum { color:var(--ac); }
+.sc-pad .snum { color:var(--gn); }
+.sc-exp .snum { color:var(--or); }
+.sc-xpd .snum { color:var(--rd); }
+.slbl { font-size:10px; color:var(--tx3); text-transform:uppercase; letter-spacing:.7px; margin-top:2px; }
+.sico { position:absolute; right:10px; top:11px; font-size:22px; opacity:.1; }
+
+/* MINI ROW (dashboard lists) */
+.mrow {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 12px; background:var(--s1);
+  border:1px solid var(--br); border-radius:var(--rs);
+  cursor:pointer; flex-shrink:0;
+  -webkit-tap-highlight-color:transparent;
+}
+.mrow:active { background:var(--s2); }
+.mav {
+  width:36px; height:36px; border-radius:50%; flex-shrink:0;
+  overflow:hidden; background:var(--s3);
+  display:flex; align-items:center; justify-content:center;
+  font-weight:700; font-size:13px; color:var(--tx3);
+}
+.mav img { width:100%; height:100%; object-fit:cover; }
+.mi  { flex:1; min-width:0; }
+.mn  { font-weight:600; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ms  { font-size:11px; color:var(--tx3); margin-top:1px; }
+.pdot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.pdot.gn { background:var(--gn); }
+.pdot.or { background:var(--or); }
+.pdot.rd { background:var(--rd); }
+
+/* ═══════════════════════════════════
+   MEMBER CARDS
+═══════════════════════════════════ */
+.mc {
+  background:var(--s1); border:1px solid var(--br);
+  border-radius:var(--r); cursor:pointer;
+  border-left:3px solid var(--br); flex-shrink:0;
+  -webkit-tap-highlight-color:transparent;
+}
+.mc:active { background:var(--s2); }
+.mc-gn { border-left-color:var(--gn); }
+.mc-or { border-left-color:var(--or); }
+.mc-rd { border-left-color:var(--rd); }
+.mci   { padding:11px 13px; display:flex; align-items:center; gap:11px; }
+.mcp   {
+  width:44px; height:44px; border-radius:10px; flex-shrink:0;
+  overflow:hidden; background:var(--s3);
+  display:flex; align-items:center; justify-content:center;
+  font-weight:800; font-size:16px; color:var(--tx3);
+}
+.mcp img { width:100%; height:100%; object-fit:cover; }
+.mcin  { flex:1; min-width:0; }
+.mcn   { font-weight:700; font-size:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.mcr   { font-size:11px; color:var(--tx3); margin-top:1px; }
+.mctg  { display:flex; gap:4px; margin-top:4px; flex-wrap:wrap; }
+.mce   { font-size:11px; color:var(--tx3); margin-top:3px; }
+
+/* ═══════════════════════════════════
+   DETAIL DRAWER
+═══════════════════════════════════ */
+.dethd {
+  padding:18px 16px 14px; display:flex; flex-direction:column;
+  align-items:center; gap:7px; border-bottom:1px solid var(--br); text-align:center;
+}
+.detph {
+  width:76px; height:76px; border-radius:50%; overflow:hidden;
+  background:var(--s3); display:flex; align-items:center; justify-content:center;
+  font-weight:800; font-size:26px; color:var(--tx3); border:2px solid var(--br);
+}
+.detph img { width:100%; height:100%; object-fit:cover; }
+.detn  { font-weight:800; font-size:21px; }
+.detr  { font-size:11px; color:var(--tx3); }
+.dettg { display:flex; gap:5px; flex-wrap:wrap; justify-content:center; }
+.igrid { display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:13px 16px; }
+.ic    { display:flex; flex-direction:column; gap:3px; }
+.ik    { font-size:10px; font-weight:700; color:var(--tx3); text-transform:uppercase; letter-spacing:.7px; }
+.iv    { font-size:13px; font-weight:600; }
+.dact  { padding:0 16px 8px; display:flex; flex-direction:column; gap:8px; }
+.drow  { display:flex; gap:8px; }
+
+/* ═══════════════════════════════════
+   ADD / EDIT FORM
+═══════════════════════════════════ */
+.phzone  { display:flex; flex-direction:column; align-items:center; gap:8px; }
+.phring  {
+  width:76px; height:76px; border-radius:50%;
+  background:var(--s3); border:2px dashed var(--br);
+  display:flex; align-items:center; justify-content:center;
+  font-size:26px; cursor:pointer; overflow:hidden;
+}
+.phring img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+.phbtns { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; }
+
+/* Plan tiles */
+.pgrid { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+.pt {
+  border:1px solid var(--br); border-radius:var(--rs);
+  padding:10px 8px; text-align:center; cursor:pointer;
+  background:var(--s2); -webkit-tap-highlight-color:transparent;
+}
+.pt.sel { border-color:var(--ac); background:rgba(255,69,0,.12); }
+.pt.sel .ptn { color:var(--ac); }
+.pt.sel .ptd { color:var(--ac2); }
+.ptn { font-weight:700; font-size:14px; }
+.ptd { font-size:11px; color:var(--tx3); margin-top:1px; }
+
+/* Status toggle 3-way */
+.trow { display:flex; border-radius:var(--rs); overflow:hidden; border:1px solid var(--br); }
+.to {
+  flex:1; padding:10px 4px; text-align:center; cursor:pointer;
+  font-weight:600; font-size:12px; border:none;
+  background:var(--s2); color:var(--tx3);
+  font-family:inherit; -webkit-tap-highlight-color:transparent;
+  border-right:1px solid var(--br);
+}
+.to:last-child { border-right:none; }
+.to.sp  { background:var(--gnb); color:var(--gn); }
+.to.sor { background:var(--orb); color:var(--or); }
+.to.su  { background:var(--rdb); color:var(--rd); }
+
+/* ═══════════════════════════════════
+   REMINDERS PAGE
+═══════════════════════════════════ */
+.abanner {
+  background:var(--orb); border:1px solid var(--orr);
+  border-radius:var(--r); padding:12px 14px;
+  display:flex; align-items:flex-start; gap:10px; flex-shrink:0;
+}
+.aico { font-size:20px; flex-shrink:0; margin-top:1px; }
+.ati  { font-weight:700; font-size:13px; color:var(--or); }
+.abo  { font-size:12px; color:var(--tx2); margin-top:3px; line-height:1.65; }
+
+.ri {
+  background:var(--s1); border:1px solid var(--br);
+  border-radius:var(--rs); padding:11px 12px;
+  display:flex; align-items:center; gap:10px;
+  border-left:3px solid var(--or); flex-shrink:0;
+}
+.rin { flex:1; min-width:0; }
+.rn  { font-weight:600; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.rs2 { font-size:11px; color:var(--tx3); margin-top:2px; }
+.rbtns { display:flex; gap:5px; }
+
+/* ═══════════════════════════════════
+   SETTINGS
+═══════════════════════════════════ */
+.sg   { display:flex; flex-direction:column; border-radius:var(--r); overflow:hidden; border:1px solid var(--br); }
+.si2  {
+  background:var(--s1); padding:13px 14px;
+  display:flex; align-items:center; gap:11px;
+  cursor:pointer; -webkit-tap-highlight-color:transparent;
+}
+.si2:active  { background:var(--s2); }
+.sico2 { font-size:18px; width:22px; text-align:center; flex-shrink:0; }
+.stx   { flex:1; }
+.silab { font-size:14px; font-weight:500; }
+.sisub { font-size:11px; color:var(--tx3); margin-top:2px; }
+.sarr  { color:var(--tx3); }
+.sdiv  { height:1px; background:var(--br); }
+
+.acard {
+  background:var(--s1); border:1px solid var(--br);
+  border-radius:var(--r); padding:14px;
+  display:flex; gap:12px; align-items:center;
+}
+.alog  {
+  width:48px; height:48px; border-radius:12px; flex-shrink:0;
+  background:linear-gradient(135deg,var(--ac),var(--ac2));
+  display:flex; align-items:center; justify-content:center; font-size:22px;
+}
+.anm   { font-weight:800; font-size:16px; }
+.aver  { font-size:11px; color:var(--tx3); margin-top:2px; }
+.adsc  { font-size:12px; color:var(--tx2); margin-top:5px; line-height:1.55; }
+
+/* ═══════════════════════════════════
+   PAGE FADE-IN
+═══════════════════════════════════ */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(6px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.page.active > * { animation: fadeUp .18s ease both; }
+.page.active > *:nth-child(1) { animation-delay:.02s; }
+.page.active > *:nth-child(2) { animation-delay:.05s; }
+.page.active > *:nth-child(3) { animation-delay:.08s; }
+.page.active > *:nth-child(4) { animation-delay:.11s; }
+.page.active > *:nth-child(5) { animation-delay:.14s; }
+</style>
+</head>
+<body>
+
+<div id="shell">
+
+  <!-- ══ HEADER ══ -->
+  <div id="hdr">
+    <div class="hlogo">
+      <div class="lmark">
+        <svg viewBox="0 0 24 24"><path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14l1.43 1.43L2 7.71l1.43 1.43L2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22l1.43-1.43L16.29 22l2.14-2.14 1.43 1.43 1.43-1.43-1.43-1.43L22 16.29l-1.43-1.43z"/></svg>
+      </div>
+      <div>
+        <div class="lname">POWERFLEX GYM</div>
+        <div class="ltag">Member Management</div>
+      </div>
+    </div>
+    <div class="hbtns">
+      <div class="ibtn" onclick="checkReminders(true)">🔔</div>
+      <div class="ibtn" onclick="doExportAndMark()">💾</div>
+    </div>
+  </div>
+
+  <!-- ══ PAGES ══ -->
+  <div id="pages">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="pg-dashboard">
+      <div class="sgrid">
+        <div class="sc sc-tot" onclick="goM('all')">
+          <div class="sico">👥</div>
+          <div class="snum" id="s-tot">0</div>
+          <div class="slbl">Total Members</div>
+        </div>
+        <div class="sc sc-pad" onclick="goM('paid')">
+          <div class="sico">✅</div>
+          <div class="snum" id="s-pad">0</div>
+          <div class="slbl">Paid Active</div>
+        </div>
+        <div class="sc sc-exp" onclick="goM('expiring')">
+          <div class="sico">⏰</div>
+          <div class="snum" id="s-exp">0</div>
+          <div class="slbl">Expiring ≤3 Days</div>
+        </div>
+        <div class="sc sc-xpd" onclick="goM('expired')">
+          <div class="sico">🚫</div>
+          <div class="snum" id="s-xpd">0</div>
+          <div class="slbl">Expired</div>
+        </div>
+      </div>
+
+      <div class="shead">
+        <div class="stitle">⏰ Expiring This Week</div>
+        <div class="scnt" id="ec">0</div>
+      </div>
+      <div id="d-exp">
+        <div class="empty"><div class="eico">🎉</div><div class="etxt">Nobody expiring soon</div></div>
+      </div>
+
+      <div class="shead">
+        <div class="stitle">🆕 Recently Added</div>
+      </div>
+      <div id="d-rec">
+        <div class="empty"><div class="eico">👤</div><div class="etxt">No members yet. Tap + to add.</div></div>
+      </div>
+    </div>
+
+    <!-- MEMBERS -->
+    <div class="page" id="pg-members">
+      <div class="sw">
+        <span class="si">🔍</span>
+        <input class="sinput" type="search" placeholder="Search name or reg number…" id="search" oninput="renderM()">
+      </div>
+      <div class="chips">
+        <div class="chip active" data-f="all"      onclick="setF('all')">All</div>
+        <div class="chip"        data-f="paid"     onclick="setF('paid')">✅ Paid</div>
+        <div class="chip"        data-f="expiring" onclick="setF('expiring')">⏰ Expiring</div>
+        <div class="chip"        data-f="expired"  onclick="setF('expired')">🚫 Expired</div>
+      </div>
+      <div id="mlist" style="display:flex;flex-direction:column;gap:8px;"></div>
+    </div>
+
+    <!-- REMINDERS -->
+    <div class="page" id="pg-reminders">
+      <div class="abanner">
+        <div class="aico">📱</div>
+        <div>
+          <div class="ati">Automatic SMS Reminders</div>
+          <div class="abo">
+            <b>⏰ Expiring</b> → Daily SMS until expiry date<br>
+            <b>🚫 Expired</b> → One-time SMS after expiry
+          </div>
+        </div>
+      </div>
+      <div id="sms-perm-status"></div>
+      <button class="btn bpri bfull" onclick="checkReminders(true)">📨 Send SMS to All Now</button>
+      <button class="btn bgn  bfull" onclick="doExportAndMark()">📊 Export to Excel (Backup)</button>
+      <div class="shead" style="margin-top:2px">
+        <div class="stitle">📋 Pending Queue</div>
+        <div class="scnt" id="rc">0</div>
+      </div>
+      <div id="rlist">
+        <div class="empty"><div class="eico">✅</div><div class="etxt">No pending reminders</div></div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="page" id="pg-settings">
+      <div class="acard">
+        <div class="alog">💪</div>
+        <div>
+          <div class="anm">PowerFlex Gym</div>
+          <div class="aver">v3.0 · Auto-SMS · Offline</div>
+          <div class="adsc">Gym member management with auto status transitions and SMS reminders. All data stored only on this phone.</div>
+        </div>
+      </div>
+
+      <div class="stitle" style="padding-bottom:8px;border-bottom:1px solid var(--br)">⚙️ Actions</div>
+      <div class="sg">
+        <div class="si2" onclick="reqSMSPerm()">
+          <div class="sico2">📱</div>
+          <div class="stx"><div class="silab">Grant SMS Permission</div><div class="sisub">Required for silent auto-SMS (APK only)</div></div>
+          <div class="sarr">›</div>
+        </div>
+        <div class="sdiv"></div>
+        <div class="si2" onclick="doExportAndMark()">
+          <div class="sico2">📊</div>
+          <div class="stx"><div class="silab">Export to Excel</div><div class="sisub">Save all members as .xlsx backup</div></div>
+          <div class="sarr">›</div>
+        </div>
+        <div class="sdiv"></div>
+        <div class="si2" onclick="document.getElementById('import-xl').click()">
+          <div class="sico2">📥</div>
+          <div class="stx"><div class="silab">Import from Excel</div><div class="sisub">Restore members from backup file</div></div>
+          <div class="sarr">›</div>
+        </div>
+        <input type="file" id="import-xl" accept=".xlsx,.xls" onchange="importExcel(event)" style="display:none">
+        <div class="sdiv"></div>
+        <div class="si2" onclick="checkReminders(true)">
+          <div class="sico2">📨</div>
+          <div class="stx"><div class="silab">Send SMS Reminders Now</div><div class="sisub">Trigger all pending SMS immediately</div></div>
+          <div class="sarr">›</div>
+        </div>
+        <div class="sdiv"></div>
+        <div class="si2" onclick="addDemo()">
+          <div class="sico2">🧪</div>
+          <div class="stx"><div class="silab">Add Demo Members</div><div class="sisub">Load 5 sample members to test</div></div>
+          <div class="sarr">›</div>
+        </div>
+        <div class="sdiv"></div>
+        <div class="si2" onclick="confirmClear()">
+          <div class="sico2">🗑️</div>
+          <div class="stx"><div class="silab" style="color:var(--rd)">Clear All Data</div><div class="sisub">Permanently delete all members</div></div>
+          <div class="sarr">›</div>
+        </div>
+      </div>
+
+      <div class="stitle" style="padding-bottom:8px;border-bottom:1px solid var(--br)">📊 Status Rules</div>
+      <div class="card" style="padding:14px">
+        <div style="font-size:13px;color:var(--tx2);line-height:2">
+          <span style="color:var(--gn)">●</span> <b>Paid</b> — You set this manually when member pays<br>
+          <span style="color:var(--or)">●</span> <b>Expiring</b> — Auto when ≤3 days left. Daily SMS sent.<br>
+          <span style="color:var(--rd)">●</span> <b>Expired</b> — Auto after expiry. One SMS sent once.<br><br>
+          To renew: Edit → set <b>Paid</b> + new expiry date.
+        </div>
+      </div>
+
+      <div class="stitle" style="padding-bottom:8px;border-bottom:1px solid var(--br)">🔒 Data Storage</div>
+      <div class="card" style="padding:14px;border-left:3px solid var(--gn)">
+        <div style="font-size:13px;color:var(--tx2);line-height:2">
+          <span style="color:var(--gn);font-weight:700">✅ Stored only on this phone</span><br>
+          No internet needed · No server · No cloud<br><br>
+          <span style="color:var(--rd);font-weight:700">⚠️ Data lost if you clear Chrome or reset phone</span><br>
+          👉 Export Excel weekly → send to WhatsApp/Drive
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /pages -->
+
+  <!-- ══ BOTTOM NAV ══ -->
+  <nav id="nav">
+    <button class="nb active" data-p="dashboard" onclick="goP('dashboard')">
+      <span class="ni">📊</span>Dashboard
+    </button>
+    <button class="nb" data-p="members" onclick="goP('members')">
+      <span class="ni">👥</span>Members
+    </button>
+    <button class="nb" data-p="reminders" onclick="goP('reminders')">
+      <span class="ni">🔔</span>
+      <span class="nbadge" id="rbadge">0</span>
+      Reminders
+    </button>
+    <button class="nb" data-p="settings" onclick="goP('settings')">
+      <span class="ni">⚙️</span>Settings
+    </button>
+  </nav>
+
+</div><!-- /shell -->
+
+<!-- FAB -->
+<button id="fab" onclick="openAdd()">+</button>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- CONFIRM -->
+<div id="cbg" onclick="closeC()"></div>
+<div id="cbox">
+  <div id="ctit">Confirm</div>
+  <div id="cmsg"></div>
+  <div id="cbtns">
+    <button class="btn bghost bfull" onclick="closeC()">Cancel</button>
+    <button class="btn brd bfull" id="cok">Confirm</button>
+  </div>
+</div>
+
+<!-- ADD / EDIT DRAWER -->
+<div class="ov" id="ov-form" onclick="bgC(event,'ov-form')">
+  <div class="drw" onclick="event.stopPropagation()">
+    <div class="dpip"></div>
+    <div class="dhd">
+      <div class="dtit" id="ftit">Add Member</div>
+      <div class="ibtn" onclick="closeOv('ov-form')">✕</div>
+    </div>
+    <div class="dbdy">
+
+      <!-- Photo -->
+      <div class="fg">
+        <div class="fl">Member Photo</div>
+        <div class="phzone">
+          <div class="phring" id="phring" onclick="document.getElementById('camin').click()">
+            <span id="phph">📷</span>
+          </div>
+          <div class="phbtns">
+            <button class="btn bghost bsm" onclick="document.getElementById('camin').click()">📷 Camera</button>
+            <button class="btn bghost bsm" onclick="document.getElementById('galin').click()">🖼 Gallery</button>
+            <button class="btn bghost bsm" onclick="clrPh()">✕ Clear</button>
+          </div>
+          <input type="file" id="camin" accept="image/*" capture="environment" onchange="onPh(event)" style="display:none">
+          <input type="file" id="galin" accept="image/*" onchange="onPh(event)" style="display:none">
+        </div>
+      </div>
+
+      <div class="fg">
+        <div class="fl">Full Name *</div>
+        <input class="fi" type="text" id="fn" placeholder="Member's full name">
+      </div>
+      <div class="fg">
+        <div class="fl">Phone Number *</div>
+        <input class="fi" type="tel" id="fp" placeholder="+91 98765 43210">
+      </div>
+      <div class="fg">
+        <div class="fl">Join Date</div>
+        <input class="fi" type="date" id="fj">
+      </div>
+
+      <!-- Plan -->
+      <div class="fg">
+        <div class="fl">Subscription Plan</div>
+        <div class="pgrid">
+          <div class="pt" data-m="1"  onclick="pickP(1)"><div class="ptn">1 Month</div><div class="ptd">30 days</div></div>
+          <div class="pt" data-m="3"  onclick="pickP(3)"><div class="ptn">3 Months</div><div class="ptd">90 days</div></div>
+          <div class="pt" data-m="6"  onclick="pickP(6)"><div class="ptn">6 Months</div><div class="ptd">180 days</div></div>
+          <div class="pt" data-m="12" onclick="pickP(12)"><div class="ptn">12 Months</div><div class="ptd">365 days</div></div>
+        </div>
+      </div>
+
+      <div class="fg">
+        <div class="fl">Valid Till (auto-set by plan, or edit manually)</div>
+        <input class="fi" type="date" id="fe" oninput="clrPlan()">
+      </div>
+
+      <!-- Status 3-way -->
+      <div class="fg">
+        <div class="fl">Payment Status <span style="color:var(--tx3);font-size:9px">(Expiring/Expired auto-set by date)</span></div>
+        <div class="trow">
+          <button class="to sp"  id="tpad" onclick="setPd('Paid')">✅ Paid</button>
+          <button class="to"     id="texp" onclick="setPd('Expiring')">⏰ Expiring</button>
+          <button class="to"     id="tunp" onclick="setPd('Expired')">🚫 Expired</button>
+        </div>
+      </div>
+
+      <input type="hidden" id="fid">
+    </div>
+    <div class="dft">
+      <button class="btn bghost" style="width:36%" onclick="closeOv('ov-form')">Cancel</button>
+      <button class="btn bpri" style="flex:1" onclick="saveM()">💾 Save Member</button>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL DRAWER -->
+<div class="ov" id="ov-det" onclick="bgC(event,'ov-det')">
+  <div class="drw" onclick="event.stopPropagation()" style="max-height:94dvh">
+    <div class="dpip"></div>
+    <div class="dethd">
+      <div class="detph" id="dph"></div>
+      <div class="detn"  id="dnm"></div>
+      <div class="detr"  id="drg"></div>
+      <div class="dettg" id="dtg"></div>
+    </div>
+    <div class="igrid" id="dgrd"></div>
+    <div class="dact">
+      <button class="btn bgn bfull" id="dwa">💬 WhatsApp Reminder</button>
+      <button class="btn bor bfull" id="dsms">📱 SMS Reminder</button>
+      <div class="drow">
+        <button class="btn bghost bfull" id="dedt">✏️ Edit</button>
+        <button class="btn brd    bfull" id="ddel">🗑️ Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+/* ═══════════════════════════════════
+   ANDROID NATIVE SMS BRIDGE
+   window.AndroidSMS is injected by MainActivity.java in APK mode.
+   In Chrome browser, falls back to sms: URI (opens SMS composer).
+═══════════════════════════════════ */
+const NativeSMS = {
+  available:         () => typeof window.AndroidSMS !== 'undefined',
+  send:        (p,m) => { try { return window.AndroidSMS.sendSMS(p,m); } catch(e){ return false; } },
+  hasPermission:     () => { try { return window.AndroidSMS.hasSMSPermission(); } catch(e){ return false; } },
+  requestPermission: () => { try { window.AndroidSMS.requestSMSPermission(); } catch(e){} }
+};
+
+/* ═══════════════════════════════════
+   INDEXEDDB
+═══════════════════════════════════ */
+const DBNAME = 'PowerFlexDB3';
+let db;
+
+function openDB() {
+  return new Promise((ok, fail) => {
+    const r = indexedDB.open(DBNAME, 1);
+    r.onupgradeneeded = e => {
+      const d = e.target.result;
+      if (!d.objectStoreNames.contains('members'))
+        d.createObjectStore('members', { keyPath:'id', autoIncrement:true });
+      if (!d.objectStoreNames.contains('meta'))
+        d.createObjectStore('meta', { keyPath:'k' });
+    };
+    r.onsuccess = e => { db = e.target.result; ok(db); };
+    r.onerror   = e => fail(e);
+  });
+}
+
+const txs = (s, m='readonly') => db.transaction(s, m).objectStore(s);
+const dbG = (s, k) => new Promise((ok,f) => { const r=txs(s).get(k); r.onsuccess=()=>ok(r.result); r.onerror=f; });
+const dbP = (s, v) => new Promise((ok,f) => { const r=txs(s,'readwrite').put(v); r.onsuccess=()=>ok(r.result); r.onerror=f; });
+const dbD = (s, k) => new Promise((ok,f) => { const r=txs(s,'readwrite').delete(k); r.onsuccess=ok; r.onerror=f; });
+const dbA = (s)    => new Promise((ok,f) => { const r=txs(s).getAll(); r.onsuccess=()=>ok(r.result); r.onerror=f; });
+
+async function nextReg() {
+  let m = await dbG('meta','reg');
+  const n = m ? m.v + 1 : 1001;
+  await dbP('meta', { k:'reg', v:n });
+  return 'PF' + String(n).padStart(4,'0');
+}
+
+/* ═══════════════════════════════════
+   STATE
+═══════════════════════════════════ */
+let members = [], filter = 'all', photoB64 = null, editId = null, planSel = null;
+let _curPaid = 'Paid';
+
+/* ═══════════════════════════════════
+   UTILS
+═══════════════════════════════════ */
+const toStr = () => new Date().toISOString().split('T')[0];
+const fmt   = d  => {
+  if (!d) return 'N/A';
+  return new Date(d + 'T00:00:00').toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
+};
+const days  = d  => {
+  if (!d) return 9999;
+  const n = new Date(); n.setHours(0,0,0,0);
+  return Math.round((new Date(d + 'T00:00:00') - n) / 86400000);
+};
+const init2 = n  => (n||'?').split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+const pdays = { 1:30, 3:90, 6:180, 12:365 };
+const esc   = s  => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+/* ═══════════════════════════════════
+   STATUS SYSTEM
+   paidStatus field: 'Paid' | 'Expiring' | 'Expired'
+   App auto-transitions: Paid→Expiring→Expired by date.
+   User can manually reset back to Paid (on renewal).
+═══════════════════════════════════ */
+function stat(m) {
+  return (m.paidStatus || 'Paid').toLowerCase();
+}
+
+async function autoUpdateStatuses() {
+  let changed = false;
+  for (const m of members) {
+    const d   = days(m.validTill);
+    const cur = m.paidStatus || 'Paid';
+    let next  = cur;
+
+    if (cur === 'Paid') {
+      if      (d < 0)  next = 'Expired';
+      else if (d <= 3) next = 'Expiring';
+    } else if (cur === 'Expiring') {
+      if (d < 0) next = 'Expired';
+    }
+    // Expired never auto-reverts — only manual Paid resets it
+
+    if (next !== cur) {
+      m.paidStatus = next;
+      await dbP('members', m);
+      changed = true;
+    }
+  }
+  return changed;
+}
+
+/* ═══════════════════════════════════
+   SMS
+═══════════════════════════════════ */
+function smsMsg(m) {
+  const s = stat(m);
+  if (s === 'expired') {
+    return `Hello ${m.name}, your PowerFlex Gym membership has expired. You cannot use gym services further. Please contact us to renew.`;
+  }
+  const d    = days(m.validTill);
+  const dTxt = d === 0 ? 'TODAY' : d === 1 ? 'tomorrow' : `in ${d} days (${fmt(m.validTill)})`;
+  return `Hello ${m.name}, your PowerFlex Gym membership is expiring ${dTxt}. Please renew immediately to continue using gym services.`;
+}
+
+function sendSMS(m, silent = false) {
+  const phone = (m.phone || '').replace(/[^\d+]/g, '');
+  const msg   = smsMsg(m);
+  if (NativeSMS.available()) {
+    if (!NativeSMS.hasPermission()) { NativeSMS.requestPermission(); toast('⚠️ Grant SMS permission first'); return false; }
+    const ok = NativeSMS.send(phone, msg);
+    if (ok && !silent) toast(`📱 SMS sent to ${m.name}`);
+    return ok;
+  } else {
+    if (!silent) window.location.href = `sms:${phone}?body=${encodeURIComponent(msg)}`;
+    return false;
+  }
+}
+
+function reqSMSPerm() {
+  NativeSMS.requestPermission();
+  toast('📱 SMS permission requested');
+  setTimeout(updateSMSStatus, 1500);
+}
+
+function updateSMSStatus() {
+  const el = document.getElementById('sms-perm-status');
+  if (!el) return;
+  if (NativeSMS.available()) {
+    el.innerHTML = NativeSMS.hasPermission()
+      ? '<div style="background:var(--gnb);color:var(--gn);border:1px solid var(--gnr);border-radius:8px;padding:9px 13px;font-size:12px;font-weight:600;margin-bottom:4px">✅ SMS Permission Granted — Auto-SMS is ACTIVE</div>'
+      : '<div style="background:var(--orb);color:var(--or);border:1px solid var(--orr);border-radius:8px;padding:9px 13px;font-size:12px;font-weight:600;margin-bottom:4px">⚠️ SMS Permission needed — tap Settings → Grant SMS</div>';
+  } else {
+    el.innerHTML = '<div style="background:var(--s2);color:var(--tx3);border:1px solid var(--br);border-radius:8px;padding:9px 13px;font-size:12px;margin-bottom:4px">ℹ️ Browser mode — SMS opens composer (1 tap to send)</div>';
+  }
+}
+
+/* ═══════════════════════════════════
+   LOAD
+═══════════════════════════════════ */
+async function load() {
+  members = await dbA('members');
+  members.sort((a,b) => b.id - a.id);
+}
+
+/* ═══════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════ */
+function goP(p) {
+  document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(x => x.classList.toggle('active', x.dataset.p === p));
+  document.getElementById('pg-' + p).classList.add('active');
+  document.getElementById('fab').classList.toggle('show', p === 'members');
+  if (p === 'dashboard') refreshDash();
+  if (p === 'members')   renderM();
+  if (p === 'reminders') { renderRem(); updateSMSStatus(); }
+}
+
+function goM(f) { setF(f); goP('members'); }
+
+function setF(f) {
+  filter = f;
+  document.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c.dataset.f === f));
+  renderM();
+}
+
+/* ═══════════════════════════════════
+   DASHBOARD
+═══════════════════════════════════ */
+async function refreshDash() {
+  await load();
+  document.getElementById('s-tot').textContent = members.length;
+  document.getElementById('s-pad').textContent = members.filter(m => stat(m) === 'paid').length;
+  document.getElementById('s-exp').textContent = members.filter(m => stat(m) === 'expiring').length;
+  document.getElementById('s-xpd').textContent = members.filter(m => stat(m) === 'expired').length;
+
+  const exList = members.filter(m => stat(m) === 'expiring').slice(0, 6);
+  document.getElementById('ec').textContent = exList.length;
+  document.getElementById('d-exp').innerHTML = exList.length
+    ? exList.map(miniR).join('')
+    : '<div class="empty"><div class="eico">🎉</div><div class="etxt">Nobody expiring soon</div></div>';
+
+  const rec = members.slice(0, 5);
+  document.getElementById('d-rec').innerHTML = rec.length
+    ? rec.map(miniR).join('')
+    : '<div class="empty"><div class="eico">👤</div><div class="etxt">No members yet. Tap + to add.</div></div>';
+
+  updateBadge();
+}
+
+function miniR(m) {
+  const s   = stat(m);
+  const d   = days(m.validTill);
+  const sub = s === 'expired' ? 'Expired' : s === 'expiring' ? `${d}d left` : 'Paid';
+  const dot = s === 'paid' ? 'gn' : s === 'expiring' ? 'or' : 'rd';
+  const av  = m.photo ? `<img src="${m.photo}" alt="">` : init2(m.name);
+  return `<div class="mrow" onclick="openDet(${m.id})">
+    <div class="mav">${av}</div>
+    <div class="mi"><div class="mn">${esc(m.name)}</div><div class="ms">${m.regNo} · ${sub}</div></div>
+    <div class="pdot ${dot}"></div>
+  </div>`;
+}
+
+/* ═══════════════════════════════════
+   MEMBERS LIST
+═══════════════════════════════════ */
+async function renderM() {
+  await load();
+  const q = (document.getElementById('search').value || '').toLowerCase().trim();
+  let list = members;
+  if (q)               list = list.filter(m => m.name.toLowerCase().includes(q) || (m.regNo||'').toLowerCase().includes(q));
+  if (filter==='paid')     list = list.filter(m => stat(m) === 'paid');
+  if (filter==='expiring') list = list.filter(m => stat(m) === 'expiring');
+  if (filter==='expired')  list = list.filter(m => stat(m) === 'expired');
+
+  const el = document.getElementById('mlist');
+  if (!list.length) {
+    el.innerHTML = `<div class="empty"><div class="eico">👤</div><div class="etxt">${filter==='all'&&!q?'No members. Tap + to add.':'No matches found.'}</div></div>`;
+    return;
+  }
+  el.innerHTML = list.map(mCard).join('');
+}
+
+function mCard(m) {
+  const s   = stat(m);
+  const d   = days(m.validTill);
+  const cls = s === 'expiring' ? 'mc-or' : s === 'paid' ? 'mc-gn' : 'mc-rd';
+  const av  = m.photo ? `<img src="${m.photo}" alt="">` : init2(m.name);
+  const bdg = s === 'expired'
+    ? `<span class="badge brd2">🚫 Expired</span>`
+    : s === 'expiring'
+    ? `<span class="badge bor2">⏰ ${d}d left</span>`
+    : `<span class="badge bgn2">✅ Paid</span>`;
+  const plan = m.plan ? `<span class="badge bgr2">${m.plan}M</span>` : '';
+  return `<div class="mc ${cls}" onclick="openDet(${m.id})">
+    <div class="mci">
+      <div class="mcp">${av}</div>
+      <div class="mcin">
+        <div class="mcn">${esc(m.name)}</div>
+        <div class="mcr">${m.regNo} · 📞 ${esc(m.phone)}</div>
+        <div class="mctg">${bdg}${plan}</div>
+        <div class="mce">📅 Expires: ${fmt(m.validTill)}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ═══════════════════════════════════
+   ADD / EDIT
+═══════════════════════════════════ */
+function openAdd() {
+  editId = null; photoB64 = null; planSel = null; _curPaid = 'Paid';
+  document.getElementById('ftit').textContent = 'Add Member';
+  document.getElementById('fn').value = '';
+  document.getElementById('fp').value = '';
+  document.getElementById('fj').value = toStr();
+  document.getElementById('fe').value = '';
+  document.getElementById('fid').value = '';
+  document.querySelectorAll('.pt').forEach(t => t.classList.remove('sel'));
+  setPd('Paid'); rstPh(); openOv('ov-form');
+}
+
+async function openEdit(id) {
+  const m = members.find(x => x.id === id); if (!m) return;
+  editId = id; photoB64 = m.photo || null; planSel = m.plan || null;
+  _curPaid = m.paidStatus || 'Paid';
+  document.getElementById('ftit').textContent = 'Edit Member';
+  document.getElementById('fn').value  = m.name;
+  document.getElementById('fp').value  = m.phone;
+  document.getElementById('fj').value  = m.joinDate || '';
+  document.getElementById('fe').value  = m.validTill || '';
+  document.getElementById('fid').value = id;
+  document.querySelectorAll('.pt').forEach(t => t.classList.toggle('sel', parseInt(t.dataset.m) === m.plan));
+  setPd(_curPaid);
+  if (m.photo) { document.getElementById('phring').innerHTML = `<img src="${m.photo}" alt="">`; } else rstPh();
+  closeOv('ov-det'); openOv('ov-form');
+}
+
+async function saveM() {
+  const name   = document.getElementById('fn').value.trim();
+  const phone  = document.getElementById('fp').value.trim();
+  const join   = document.getElementById('fj').value || toStr();
+  const expiry = document.getElementById('fe').value;
+  const paid   = _curPaid || 'Paid';
+  if (!name)   { toast('⚠️ Enter member name'); return; }
+  if (!phone)  { toast('⚠️ Enter phone number'); return; }
+  if (!expiry) { toast('⚠️ Set expiry date'); return; }
+
+  if (editId) {
+    const m = members.find(x => x.id === editId);
+    Object.assign(m, { name, phone, joinDate:join, validTill:expiry, paidStatus:paid, plan:planSel, photo:photoB64 });
+    // If user manually set Paid — reset SMS tracking flags
+    if (paid === 'Paid') { m.lastSmsSent = null; m.expiredSmsSent = false; }
+    await dbP('members', m);
+    toast('✅ Member updated');
+  } else {
+    const reg = await nextReg();
+    await dbP('members', {
+      regNo:reg, name, phone, joinDate:join, validTill:expiry,
+      paidStatus:paid, plan:planSel, photo:photoB64,
+      lastSmsSent:null, expiredSmsSent:false,
+      createdAt:new Date().toISOString()
+    });
+    toast('✅ Member added — ' + reg);
+  }
+  closeOv('ov-form');
+  await load(); renderM(); refreshDash(); updateBadge();
+}
+
+function pickP(m) {
+  planSel = m;
+  document.querySelectorAll('.pt').forEach(t => t.classList.toggle('sel', parseInt(t.dataset.m) === m));
+  const j = document.getElementById('fj').value || toStr();
+  const d = new Date(j + 'T00:00:00');
+  d.setDate(d.getDate() + pdays[m]);
+  document.getElementById('fe').value = d.toISOString().split('T')[0];
+}
+function clrPlan() { planSel = null; document.querySelectorAll('.pt').forEach(t => t.classList.remove('sel')); }
+
+function setPd(v) {
+  _curPaid = v;
+  document.getElementById('tpad').className = 'to' + (v === 'Paid'     ? ' sp'  : '');
+  document.getElementById('texp').className = 'to' + (v === 'Expiring' ? ' sor' : '');
+  document.getElementById('tunp').className = 'to' + (v === 'Expired'  ? ' su'  : '');
+}
+
+function onPh(e) {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = ev => { photoB64 = ev.target.result; document.getElementById('phring').innerHTML = `<img src="${photoB64}" alt="">`; };
+  r.readAsDataURL(f); e.target.value = '';
+}
+function clrPh() { photoB64 = null; rstPh(); }
+function rstPh() { document.getElementById('phring').innerHTML = '<span id="phph">📷</span>'; }
+
+/* ═══════════════════════════════════
+   DETAIL DRAWER
+═══════════════════════════════════ */
+async function openDet(id) {
+  await load();
+  const m = members.find(x => x.id === id); if (!m) return;
+  const s = stat(m);
+  const d = days(m.validTill);
+
+  const ph = document.getElementById('dph');
+  ph.innerHTML = m.photo ? `<img src="${m.photo}" alt="">` : init2(m.name);
+  document.getElementById('dnm').textContent = m.name;
+  document.getElementById('drg').textContent = m.regNo;
+
+  const tg = s === 'expired'
+    ? `<span class="badge brd2">🚫 Expired</span>`
+    : s === 'expiring'
+    ? `<span class="badge bor2">⏰ Expiring — ${d} day${d!==1?'s':''} left</span>`
+    : `<span class="badge bgn2">✅ Paid & Active</span>`;
+  const pl = m.plan ? `<span class="badge bgr2">${m.plan} Month Plan</span>` : '';
+  document.getElementById('dtg').innerHTML = tg + pl;
+
+  const dc = s === 'paid' ? 'var(--gn)' : s === 'expiring' ? 'var(--or)' : 'var(--rd)';
+  const dStr = d < 0 ? 'Expired' : d === 0 ? 'TODAY' : d + ' days';
+  const stStr = s === 'paid' ? '✅ Paid & Active' : s === 'expiring' ? '⏰ Expiring' : '🚫 Expired';
+
+  document.getElementById('dgrd').innerHTML = `
+    <div class="ic"><div class="ik">Phone</div><div class="iv">📞 ${esc(m.phone)}</div></div>
+    <div class="ic"><div class="ik">Join Date</div><div class="iv">${fmt(m.joinDate)}</div></div>
+    <div class="ic"><div class="ik">Valid Till</div><div class="iv" style="color:${dc}">📅 ${fmt(m.validTill)}</div></div>
+    <div class="ic"><div class="ik">Days Left</div><div class="iv" style="color:${dc}">⏳ ${dStr}</div></div>
+    <div class="ic"><div class="ik">Plan</div><div class="iv">💪 ${m.plan ? m.plan+' Month' : 'Custom'}</div></div>
+    <div class="ic"><div class="ik">Status</div><div class="iv" style="color:${dc}">${stStr}</div></div>`;
+
+  const waMsg = encodeURIComponent(smsMsg(m));
+  const raw   = (m.phone || '').replace(/[^\d+]/g, '');
+  document.getElementById('dwa').onclick  = () => window.open(`https://wa.me/${raw}?text=${waMsg}`, '_blank');
+  document.getElementById('dsms').onclick = () => sendSMS(m);
+  document.getElementById('dedt').onclick = () => openEdit(id);
+  document.getElementById('ddel').onclick = () => confirmDel(id);
+  openOv('ov-det');
+}
+
+/* ═══════════════════════════════════
+   REMINDERS
+═══════════════════════════════════ */
+async function checkReminders(manual = false) {
+  await load();
+  const changed = await autoUpdateStatuses();
+  if (changed) { await load(); refreshDash(); }
+
+  const today      = toStr();
+  const expiring   = members.filter(m => stat(m) === 'expiring');
+  const justExpired = members.filter(m => stat(m) === 'expired' && !m.expiredSmsSent);
+
+  updateBadge(expiring.length + justExpired.length);
+
+  // Collect who needs SMS today
+  const toSend = [];
+  for (const m of expiring)    { if (m.lastSmsSent !== today)  toSend.push({ m, type:'expiring' }); }
+  for (const m of justExpired) { toSend.push({ m, type:'expired' }); }
+
+  if (!toSend.length) {
+    if (manual) toast('✅ All SMS up to date');
+    renderRem(); return;
+  }
+
+  if (NativeSMS.available() && NativeSMS.hasPermission()) {
+    let count = 0;
+    for (const { m, type } of toSend) {
+      const ok = sendSMS(m, true);
+      if (ok) {
+        if (type === 'expiring') m.lastSmsSent   = today;
+        else                     m.expiredSmsSent = true;
+        await dbP('members', m);
+        count++;
+      }
+    }
+    if (manual || count > 0) toast(`📱 SMS sent to ${count} member${count !== 1 ? 's' : ''}`);
+  } else {
+    if (manual && toSend.length) {
+      const { m } = toSend[0];
+      sendSMS(m, false);
+      if (toSend.length > 1) toast(`📱 ${toSend.length} pending. Sending first.`);
+    }
+  }
+  renderRem();
+}
+
+async function renderRem() {
+  await load();
+  const today      = toStr();
+  const expiring   = members.filter(m => stat(m) === 'expiring');
+  const expired    = members.filter(m => stat(m) === 'expired');
+  const total      = expiring.length + expired.length;
+  document.getElementById('rc').textContent = total;
+
+  const el = document.getElementById('rlist');
+  if (!total) {
+    el.innerHTML = '<div class="empty"><div class="eico">✅</div><div class="etxt">No pending reminders</div></div>';
+    return;
+  }
+
+  let html = '';
+
+  if (expiring.length) {
+    html += `<div class="shead"><div class="stitle" style="color:var(--or)">⏰ Expiring — Daily SMS</div><div class="scnt">${expiring.length}</div></div>`;
+    html += expiring.map(m => {
+      const d       = days(m.validTill);
+      const smsDone = m.lastSmsSent === today;
+      const av      = m.photo ? `<img src="${m.photo}">` : `<span style="font-size:11px;font-weight:700">${init2(m.name)}</span>`;
+      return `<div class="ri" style="border-left-color:var(--or)">
+        <div class="mav" style="border-radius:8px;width:40px;height:40px">${av}</div>
+        <div class="rin">
+          <div class="rn">${esc(m.name)}</div>
+          <div class="rs2">⏳ ${d} day${d!==1?'s':''} left · 📞 ${esc(m.phone)}</div>
+          <div class="rs2" style="color:${smsDone?'var(--gn)':'var(--tx3)'}">
+            ${smsDone ? '✅ SMS sent today' : '📤 SMS pending today'}
+          </div>
+        </div>
+        <div class="rbtns">
+          <button class="btn bor bsm" onclick="sendSMSManual(${m.id})">SMS</button>
+          <button class="btn bgn bsm" onclick="openWA(${m.id})">WA</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  if (expired.length) {
+    html += `<div class="shead" style="margin-top:10px"><div class="stitle" style="color:var(--rd)">🚫 Expired — One-time SMS</div><div class="scnt">${expired.length}</div></div>`;
+    html += expired.map(m => {
+      const smsDone = m.expiredSmsSent === true;
+      const av      = m.photo ? `<img src="${m.photo}">` : `<span style="font-size:11px;font-weight:700">${init2(m.name)}</span>`;
+      return `<div class="ri" style="border-left-color:var(--rd)">
+        <div class="mav" style="border-radius:8px;width:40px;height:40px">${av}</div>
+        <div class="rin">
+          <div class="rn">${esc(m.name)}</div>
+          <div class="rs2">📅 Expired ${fmt(m.validTill)} · 📞 ${esc(m.phone)}</div>
+          <div class="rs2" style="color:${smsDone?'var(--gn)':'var(--tx3)'}">
+            ${smsDone ? '✅ Expired SMS sent' : '📤 Expired SMS pending'}
+          </div>
+        </div>
+        <div class="rbtns">
+          <button class="btn brd bsm" onclick="sendSMSManual(${m.id})">SMS</button>
+          <button class="btn bgn bsm" onclick="openWA(${m.id})">WA</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  el.innerHTML = html;
+}
+
+async function sendSMSManual(id) {
+  await load();
+  const m = members.find(x => x.id === id); if (!m) return;
+  sendSMS(m, false);
+  const today = toStr();
+  if (stat(m) === 'expiring') m.lastSmsSent    = today;
+  if (stat(m) === 'expired')  m.expiredSmsSent = true;
+  await dbP('members', m);
+  setTimeout(renderRem, 600);
+}
+
+function openWA(id) {
+  const m = members.find(x => x.id === id); if (!m) return;
+  const raw = (m.phone || '').replace(/[^\d+]/g,'');
+  window.open(`https://wa.me/${raw}?text=${encodeURIComponent(smsMsg(m))}`, '_blank');
+}
+
+function updateBadge(count) {
+  if (count === undefined)
+    count = members.filter(m => stat(m) === 'expiring' || (stat(m) === 'expired' && !m.expiredSmsSent)).length;
+  const b = document.getElementById('rbadge');
+  b.textContent = count;
+  b.style.display = count > 0 ? 'flex' : 'none';
+}
+
+/* ═══════════════════════════════════
+   EXPORT / IMPORT
+═══════════════════════════════════ */
+async function doExport() {
+  await load();
+  if (!members.length) { toast('⚠️ No members to export'); return; }
+  const rows = members.map(m => ({
+    'Reg No':         m.regNo,
+    'Name':           m.name,
+    'Phone':          m.phone,
+    'Join Date':      fmt(m.joinDate),
+    'Plan (Months)':  m.plan || 'Custom',
+    'Valid Till':     fmt(m.validTill),
+    'Days Left':      days(m.validTill),
+    'Status':         m.paidStatus || 'Paid'
+  }));
+  const ws = XLSX.utils.json_to_sheet(rows);
+  ws['!cols'] = [{wch:10},{wch:22},{wch:16},{wch:14},{wch:14},{wch:14},{wch:10},{wch:12}];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Members');
+  XLSX.writeFile(wb, `PowerFlex_${toStr()}.xlsx`);
+  toast('📊 Excel exported!');
+}
+
+async function doExportAndMark() {
+  await doExport();
+  localStorage.setItem('pf_last_backup', Date.now());
+}
+
+async function importExcel(event) {
+  const file = event.target.files[0];
+  event.target.value = '';
+  if (!file) return;
+  toast('📥 Reading file...');
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    try {
+      const wb   = XLSX.read(e.target.result, { type:'binary' });
+      const ws   = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws);
+      if (!rows.length) { toast('⚠️ No data found in file'); return; }
+      let added = 0, skipped = 0;
+      for (const row of rows) {
+        const name  = row['Name']  || row['name']  || '';
+        const phone = row['Phone'] || row['phone'] || '';
+        if (!name || !phone) { skipped++; continue; }
+        const parseDate = v => {
+          if (!v) return '';
+          if (typeof v === 'number') {
+            return new Date(Math.round((v-25569)*86400000)).toISOString().split('T')[0];
+          }
+          const s = String(v);
+          const mo = {jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+          const m2 = s.match(/(\d{1,2})[-\/\s]([A-Za-z]+)[-\/\s](\d{4})/);
+          if (m2 && mo[m2[2].toLowerCase().slice(0,3)] !== undefined)
+            return new Date(+m2[3], mo[m2[2].toLowerCase().slice(0,3)], +m2[1]).toISOString().split('T')[0];
+          const d2 = new Date(s);
+          return isNaN(d2) ? '' : d2.toISOString().split('T')[0];
+        };
+        const reg = await nextReg();
+        await dbP('members', {
+          regNo:reg, name:name.trim(), phone:String(phone).trim(),
+          joinDate:  parseDate(row['Join Date']||''),
+          validTill: parseDate(row['Valid Till']||row['Expiry']||''),
+          paidStatus:(row['Status']||row['Paid Status']||'Paid').includes('Paid')?'Paid':'Expiring',
+          plan:      parseInt(row['Plan (Months)']||0)||null,
+          photo:null, lastSmsSent:null, expiredSmsSent:false,
+          createdAt: new Date().toISOString()
+        });
+        added++;
+      }
+      await load(); renderM(); refreshDash(); updateBadge();
+      toast(`✅ Imported ${added} members${skipped?', skipped '+skipped:''}`);
+    } catch(err) {
+      toast('❌ Import failed: ' + err.message);
+    }
+  };
+  reader.readAsBinaryString(file);
+}
+
+/* ═══════════════════════════════════
+   DELETE / CLEAR
+═══════════════════════════════════ */
+function confirmDel(id) {
+  showC('Delete Member', 'Permanently delete this member?', async () => {
+    await dbD('members', id);
+    toast('🗑️ Member deleted');
+    closeOv('ov-det');
+    await load(); renderM(); refreshDash(); updateBadge();
+  });
+}
+function confirmClear() {
+  showC('Clear ALL Data', 'Every member will be permanently deleted.\nAre you sure?', async () => {
+    for (const m of await dbA('members')) await dbD('members', m.id);
+    members = [];
+    toast('🗑️ All data cleared');
+    renderM(); refreshDash(); updateBadge();
+  });
+}
+
+/* ═══════════════════════════════════
+   DEMO DATA
+═══════════════════════════════════ */
+async function addDemo() {
+  const demos = [
+    { name:'Arjun Sharma',    phone:'9876543210', plan:3,  paidStatus:'Paid',     off:60  },
+    { name:'Priya Nair',      phone:'9812345678', plan:1,  paidStatus:'Expiring', off:2   },
+    { name:'Rohit Verma',     phone:'9898989898', plan:6,  paidStatus:'Paid',     off:140 },
+    { name:'Sneha Kulkarni',  phone:'9001234567', plan:12, paidStatus:'Expired',  off:-5  },
+    { name:'Dev Patel',       phone:'9123456780', plan:1,  paidStatus:'Expiring', off:1   },
+  ];
+  for (const x of demos) {
+    const reg = await nextReg();
+    const exp = new Date(); exp.setDate(exp.getDate() + x.off);
+    const jo  = new Date(); jo.setDate(jo.getDate() - pdays[x.plan] + x.off);
+    await dbP('members', {
+      regNo:reg, name:x.name, phone:x.phone,
+      joinDate:  jo.toISOString().split('T')[0],
+      validTill: exp.toISOString().split('T')[0],
+      paidStatus:x.paidStatus, plan:x.plan,
+      photo:null, lastSmsSent:null, expiredSmsSent:false,
+      createdAt: new Date().toISOString()
+    });
+  }
+  toast('🧪 5 demo members added!');
+  await load(); renderM(); refreshDash(); updateBadge();
+}
+
+/* ═══════════════════════════════════
+   BACKUP REMINDER
+═══════════════════════════════════ */
+function checkBackupReminder() {
+  const last    = localStorage.getItem('pf_last_backup');
+  const lastWrn = localStorage.getItem('pf_last_warn');
+  const now     = Date.now();
+  if (!members.length) return;
+  const daysSince  = last    ? (now - +last)   / 86400000 : 999;
+  const hrsSinceWrn = lastWrn ? (now - +lastWrn)/ 3600000  : 999;
+  if (daysSince > 7 && hrsSinceWrn > 23) {
+    localStorage.setItem('pf_last_warn', now);
+    const b = document.createElement('div');
+    b.style.cssText = `
+      position:fixed;bottom:calc(var(--NAV) + 10px);left:8px;right:8px;
+      background:#1a1000;border:1px solid var(--or);border-radius:10px;
+      padding:11px 13px;z-index:90;display:flex;align-items:center;gap:9px;
+      box-shadow:0 4px 18px rgba(0,0,0,.7);animation:fadeUp .3s ease;
+    `;
+    b.innerHTML = `
+      <div style="font-size:20px">⚠️</div>
+      <div style="flex:1">
+        <div style="font-weight:700;font-size:13px;color:var(--or)">Backup Overdue!</div>
+        <div style="font-size:11px;color:var(--tx2);margin-top:2px">No backup in ${Math.floor(daysSince)} days. Export now!</div>
+      </div>
+      <button onclick="doExportAndMark();this.closest('div[style]').remove()"
+        style="background:var(--or);color:#000;border:none;border-radius:6px;padding:7px 10px;font-weight:700;font-size:12px;cursor:pointer">
+        Backup
+      </button>
+      <span onclick="this.closest('div[style]').remove()" style="color:var(--tx3);font-size:18px;cursor:pointer;padding:2px">✕</span>`;
+    document.body.appendChild(b);
+  }
+}
+
+/* ═══════════════════════════════════
+   OVERLAY HELPERS
+═══════════════════════════════════ */
+function openOv(id)  { document.getElementById(id).classList.add('open'); }
+function closeOv(id) { document.getElementById(id).classList.remove('open'); }
+function bgC(e, id)  { if (e.target === document.getElementById(id)) closeOv(id); }
+
+let _cb = null;
+function showC(t, m, cb) {
+  document.getElementById('ctit').textContent = t;
+  document.getElementById('cmsg').textContent = m;
+  _cb = cb;
+  document.getElementById('cbg').classList.add('on');
+  document.getElementById('cbox').classList.add('on');
+  document.getElementById('cok').onclick = () => { closeC(); _cb && _cb(); };
+}
+function closeC() {
+  document.getElementById('cbg').classList.remove('on');
+  document.getElementById('cbox').classList.remove('on');
+}
+
+/* ═══════════════════════════════════
+   TOAST
+═══════════════════════════════════ */
+function toast(msg, dur = 2800) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('on');
+  setTimeout(() => t.classList.remove('on'), dur);
+}
+
+/* ═══════════════════════════════════
+   INIT
+═══════════════════════════════════ */
+async function init() {
+  await openDB();
+  await load();
+  await autoUpdateStatuses();
+  await load();
+  refreshDash();
+  setTimeout(() => checkReminders(false), 1500);
+  setTimeout(() => checkBackupReminder(),  3000);
+}
+init();
+</script>
+</body>
+</html>
