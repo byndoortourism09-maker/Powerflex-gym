@@ -28,12 +28,15 @@ jobs:
       - name: Install SDK platforms
         run: sdkmanager "platforms;android-34" "build-tools;34.0.0"
 
-      - name: Download Gradle wrapper JAR
+      - name: Install Gradle 8.2 and generate wrapper
         run: |
-          mkdir -p gradle/wrapper
-          curl -fsSL "https://github.com/gradle/gradle/raw/v8.2.1/gradle/wrapper/gradle-wrapper.jar" \
-            -o gradle/wrapper/gradle-wrapper.jar
-          chmod +x gradle/wrapper/gradle-wrapper.jar
+          # Install Gradle 8.2 directly
+          wget -q https://services.gradle.org/distributions/gradle-8.2-bin.zip -O /tmp/gradle.zip
+          unzip -q /tmp/gradle.zip -d /tmp/gradle-install
+          export GRADLE_HOME=/tmp/gradle-install/gradle-8.2
+          export PATH=$GRADLE_HOME/bin:$PATH
+          # Generate proper wrapper files
+          gradle wrapper --gradle-version=8.2 --distribution-type=bin
           chmod +x gradlew
 
       - name: Build Debug APK
