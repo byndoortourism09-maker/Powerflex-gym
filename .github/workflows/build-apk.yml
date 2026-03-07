@@ -28,19 +28,12 @@ jobs:
       - name: Install SDK platforms
         run: sdkmanager "platforms;android-34" "build-tools;34.0.0"
 
-      - name: Install Gradle 8.2 and generate wrapper
-        run: |
-          # Install Gradle 8.2 directly
-          wget -q https://services.gradle.org/distributions/gradle-8.2-bin.zip -O /tmp/gradle.zip
-          unzip -q /tmp/gradle.zip -d /tmp/gradle-install
-          export GRADLE_HOME=/tmp/gradle-install/gradle-8.2
-          export PATH=$GRADLE_HOME/bin:$PATH
-          # Generate proper wrapper files
-          gradle wrapper --gradle-version=8.2 --distribution-type=bin
-          chmod +x gradlew
-
       - name: Build Debug APK
-        run: ./gradlew assembleDebug --no-daemon --stacktrace
+        run: |
+          # Download and install Gradle 8.2
+          wget -q https://services.gradle.org/distributions/gradle-8.2-bin.zip -O /tmp/gradle.zip
+          unzip -q /tmp/gradle.zip -d /opt
+          /opt/gradle-8.2/bin/gradle assembleDebug --no-daemon --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
@@ -48,4 +41,3 @@ jobs:
           name: PowerFlex-Gym-APK
           path: app/build/outputs/apk/debug/app-debug.apk
           retention-days: 90
-          
