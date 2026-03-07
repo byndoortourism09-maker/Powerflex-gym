@@ -1,0 +1,2005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#0d0d0d">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="PowerFlex">
+<title>PowerFlex Gym</title>
+<meta name="theme-color" content="#ff4500" media="(prefers-color-scheme: dark)">
+<link rel="manifest" id="pwa-manifest">
+<link rel="apple-touch-icon" id="apple-icon">
+<script>
+// Inline manifest (no separate file needed — works in single HTML)
+const _ico192 = "data:image/png;base64,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";
+const _ico512 = "data:image/png;base64,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";
+const manifest = {
+  name: "PowerFlex Gym",
+  short_name: "PowerFlex",
+  description: "Gym Member Management App",
+  start_url: "./",
+  display: "standalone",
+  orientation: "portrait",
+  background_color: "#0d0d0d",
+  theme_color: "#ff4500",
+  icons: [
+    { src: _ico192, sizes: "192x192", type: "image/png", purpose: "any maskable" },
+    { src: _ico512, sizes: "512x512", type: "image/png", purpose: "any maskable" }
+  ]
+};
+const blob = new Blob([JSON.stringify(manifest)], {type:"application/manifest+json"});
+document.getElementById("pwa-manifest").href = URL.createObjectURL(blob);
+document.getElementById("apple-icon").href = _ico192;
+</script>
+<style>
+/* ═══════════════════════════════════
+   RESET
+═══════════════════════════════════ */
+*, *::before, *::after {
+  margin: 0; padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ═══════════════════════════════════
+   VARIABLES
+═══════════════════════════════════ */
+:root {
+  --bg:  #0d0d0d;
+  --s1:  #161616;
+  --s2:  #1e1e1e;
+  --s3:  #282828;
+  --br:  #2e2e2e;
+  --ac:  #ff4500;
+  --ac2: #ff7300;
+  --aglow: rgba(255,69,0,.3);
+  --tx:  #f0f0f0;
+  --tx2: #999;
+  --tx3: #555;
+  --gn:  #00e676;
+  --gnb: rgba(0,230,118,.1);
+  --gnr: rgba(0,230,118,.3);
+  --rd:  #ff3d57;
+  --rdb: rgba(255,61,87,.1);
+  --rdr: rgba(255,61,87,.3);
+  --or:  #ffab00;
+  --orb: rgba(255,171,0,.1);
+  --orr: rgba(255,171,0,.3);
+  --r:   12px;
+  --rs:  8px;
+  --HDR: 56px;
+  --TABS: 48px;
+}
+
+/* ═══════════════════════════════════
+   ROOT LAYOUT — THE FIX
+   Use 100dvh on html/body, simple flex.
+   NO position:fixed on body.
+   NO overflow:hidden on pages container.
+   Pages use display:none / display:flex — no absolute positioning.
+═══════════════════════════════════ */
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--tx);
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+/* The outermost shell */
+#shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh; /* dynamic viewport — Chrome respects this */
+  overflow: hidden;
+  background: var(--bg);
+}
+
+/* ── HEADER (title row + top tabs) ── */
+#hdr {
+  flex-shrink: 0;
+  background: var(--s1);
+  border-bottom: 1px solid var(--br);
+  display: flex;
+  flex-direction: column;
+  padding-top: env(safe-area-inset-top, 0px);
+  z-index: 10;
+}
+.hdr-top {
+  height: var(--HDR);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+}
+.hlogo { display:flex; align-items:center; gap:10px; }
+.lmark {
+  width:36px; height:36px; border-radius:9px;
+  background: linear-gradient(135deg,var(--ac),var(--ac2));
+  display:flex; align-items:center; justify-content:center;
+  box-shadow: 0 0 14px var(--aglow); flex-shrink:0;
+}
+.lmark svg { width:20px; height:20px; fill:white; }
+.lname { font-weight:900; font-size:17px; letter-spacing:.5px; line-height:1; }
+.ltag  { font-size:9px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:var(--tx3); margin-top:1px; }
+.hbtns { display:flex; gap:6px; }
+.ibtn  {
+  width:36px; height:36px; border-radius:var(--rs);
+  border:1px solid var(--br); background:var(--s2);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; font-size:16px; color:var(--tx2);
+  -webkit-tap-highlight-color: transparent;
+}
+.ibtn:active { background:var(--s3); }
+
+/* ── TOP NAV TABS — safe from Android bottom gestures ── */
+#nav {
+  display: flex;
+  overflow-x: auto;
+  border-top: 1px solid var(--br);
+  scrollbar-width: none;
+  height: var(--TABS);
+}
+#nav::-webkit-scrollbar { display: none; }
+.nb {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 6px 16px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: var(--tx3);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  font-family: inherit;
+  position: relative;
+  white-space: nowrap;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.nb .ni { font-size: 18px; line-height: 1.2; display: block; }
+.nb.active { color: var(--ac); }
+.nb.active::after {
+  content: '';
+  position: absolute; bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 28px; height: 2px;
+  background: var(--ac);
+  border-radius: 2px 2px 0 0;
+}
+.nbadge {
+  position: absolute; top: 4px; right: 6px;
+  background: var(--rd); color: white;
+  font-size: 9px; font-weight: 700;
+  min-width: 15px; height: 15px;
+  border-radius: 8px; padding: 0 3px;
+  display: none; align-items: center; justify-content: center;
+}
+
+/* ── PAGES WRAPPER ── */
+#pages {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ── INDIVIDUAL PAGES ── */
+.page {
+  display: none;
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 12px 24px;
+  background: var(--bg);
+}
+.page.active { display: flex; }
+
+/* ── FAB ── */
+#fab {
+  position: fixed;
+  bottom: calc(env(safe-area-inset-bottom,0px) + 18px);
+  right: 14px;
+  width: 52px; height: 52px; border-radius: 50%;
+  background: linear-gradient(135deg,var(--ac),var(--ac2));
+  border: none; color: white; font-size: 28px;
+  display: none; align-items: center; justify-content: center;
+  cursor: pointer; z-index: 20;
+  box-shadow: 0 4px 18px var(--aglow);
+  -webkit-tap-highlight-color: transparent;
+}
+#fab:active { transform: scale(.92); }
+#fab.show { display: flex; }
+
+/* ═══════════════════════════════════
+   SHARED COMPONENTS
+═══════════════════════════════════ */
+::-webkit-scrollbar { width: 2px; }
+::-webkit-scrollbar-thumb { background: var(--s3); border-radius: 2px; }
+
+.shead {
+  display:flex; align-items:center; justify-content:space-between;
+  padding-bottom:8px; border-bottom:1px solid var(--br);
+  flex-shrink: 0;
+}
+.stitle {
+  font-weight:700; font-size:11px; letter-spacing:2px;
+  text-transform:uppercase; color:var(--tx3);
+  display:flex; align-items:center; gap:6px;
+}
+.scnt {
+  background:var(--s2); border:1px solid var(--br);
+  font-size:10px; font-weight:700; color:var(--tx3);
+  padding:1px 7px; border-radius:20px;
+}
+
+/* BUTTONS */
+.btn {
+  display:inline-flex; align-items:center; justify-content:center;
+  gap:6px; padding:11px 16px; border-radius:var(--rs);
+  border:none; font-family:inherit; font-size:13px; font-weight:600;
+  cursor:pointer; white-space:nowrap; flex-shrink:0;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn:active { opacity:.75; }
+.bfull { width:100%; }
+.bpri  { background:linear-gradient(135deg,var(--ac),var(--ac2)); color:white; box-shadow:0 2px 10px var(--aglow); }
+.bghost{ background:var(--s2); border:1px solid var(--br); color:var(--tx2); }
+.bgn   { background:var(--gnb); border:1px solid var(--gnr); color:var(--gn); }
+.brd   { background:var(--rdb); border:1px solid var(--rdr); color:var(--rd); }
+.bor   { background:var(--orb); border:1px solid var(--orr); color:var(--or); }
+.bsm   { padding:7px 11px; font-size:12px; border-radius:6px; }
+
+/* BADGES */
+.badge { display:inline-flex; align-items:center; gap:3px; padding:3px 8px; border-radius:20px; font-size:10px; font-weight:700; }
+.bgn2 { background:var(--gnb); color:var(--gn); border:1px solid var(--gnr); }
+.brd2 { background:var(--rdb); color:var(--rd); border:1px solid var(--rdr); }
+.bor2 { background:var(--orb); color:var(--or); border:1px solid var(--orr); }
+.bgr2 { background:var(--s2); color:var(--tx2); border:1px solid var(--br); }
+
+/* CARDS */
+.card { background:var(--s1); border:1px solid var(--br); border-radius:var(--r); overflow:hidden; }
+
+/* FORM FIELDS */
+.fg   { display:flex; flex-direction:column; gap:4px; }
+.fl   { font-size:11px; font-weight:700; color:var(--tx3); text-transform:uppercase; letter-spacing:.7px; }
+.fi, .fsel {
+  background:var(--s2); border:1px solid var(--br); border-radius:var(--rs);
+  padding:11px 12px; color:var(--tx); font-size:14px; outline:none; width:100%;
+  -webkit-appearance:none; appearance:none;
+}
+.fi:focus, .fsel:focus { border-color:var(--ac); }
+.fi::placeholder { color:var(--tx3); }
+
+/* SEARCH */
+.sw { position:relative; flex-shrink:0; }
+.si { position:absolute; left:11px; top:50%; transform:translateY(-50%); color:var(--tx3); font-size:14px; pointer-events:none; }
+.sinput {
+  width:100%; background:var(--s2); border:1px solid var(--br); border-radius:var(--rs);
+  padding:10px 12px 10px 36px; color:var(--tx); font-size:14px; outline:none;
+}
+.sinput:focus { border-color:var(--ac); }
+.sinput::placeholder { color:var(--tx3); }
+
+/* CHIPS */
+.chips { display:flex; gap:6px; overflow-x:auto; padding-bottom:2px; flex-shrink:0; }
+.chips::-webkit-scrollbar { display:none; }
+.chip {
+  padding:6px 13px; border-radius:20px; white-space:nowrap;
+  font-size:12px; font-weight:600; cursor:pointer;
+  border:1px solid var(--br); background:var(--s2); color:var(--tx3);
+  flex-shrink:0; -webkit-tap-highlight-color:transparent;
+}
+.chip.active { background:var(--ac); color:white; border-color:var(--ac); }
+
+/* EMPTY STATE */
+.empty {
+  display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:8px; padding:36px 20px;
+  color:var(--tx3); text-align:center;
+}
+.eico { font-size:42px; opacity:.3; }
+.etxt { font-size:13px; line-height:1.6; }
+
+/* TOAST */
+#toast {
+  position:fixed;
+  bottom: calc(env(safe-area-inset-bottom,0px) + 24px);
+  left:50%; transform:translateX(-50%) translateY(10px);
+  background:var(--s3); color:var(--tx);
+  padding:9px 18px; border-radius:22px; font-size:13px; font-weight:500;
+  z-index:500; opacity:0; pointer-events:none; transition:all .22s;
+  white-space:nowrap; max-width:90vw;
+  box-shadow:0 4px 16px rgba(0,0,0,.5);
+}
+#toast.on { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* OVERLAY / DRAWER */
+.ov {
+  position:fixed; inset:0;
+  background:rgba(0,0,0,.78);
+  z-index:200; opacity:0; pointer-events:none;
+  transition:opacity .2s;
+  display:flex; flex-direction:column; justify-content:flex-end;
+}
+.ov.open { opacity:1; pointer-events:all; }
+.drw {
+  background:var(--s1); border-radius:20px 20px 0 0;
+  max-height:92dvh;
+  display:flex; flex-direction:column;
+  transform:translateY(100%);
+  transition:transform .28s cubic-bezier(.32,1.2,.6,1);
+  padding-bottom:calc(env(safe-area-inset-bottom,0px) + 8px);
+}
+.ov.open .drw { transform:translateY(0); }
+.dpip { width:36px; height:4px; background:var(--s3); border-radius:2px; margin:10px auto 2px; flex-shrink:0; }
+.dhd {
+  padding:6px 16px 12px; display:flex; align-items:center;
+  justify-content:space-between; border-bottom:1px solid var(--br);
+  flex-shrink:0; background:var(--s1); z-index:2;
+}
+.dtit { font-weight:800; font-size:19px; }
+.dbdy {
+  padding:16px; display:flex; flex-direction:column; gap:13px;
+  overflow-y:auto; overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  flex:1; min-height:0;
+}
+.dft  {
+  padding:12px 16px; border-top:1px solid var(--br); display:flex; gap:8px;
+  flex-shrink:0; background:var(--s1);
+}
+
+/* CONFIRM DIALOG */
+#cbg  { position:fixed; inset:0; background:rgba(0,0,0,.72); z-index:300; display:none; }
+#cbox {
+  position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+  background:var(--s1); border:1px solid var(--br); border-radius:var(--r);
+  padding:20px; z-index:301; width:min(310px,90vw);
+  display:none; flex-direction:column; gap:14px;
+  box-shadow:0 8px 30px rgba(0,0,0,.6);
+}
+#cbg.on { display:block; }
+#cbox.on { display:flex; }
+#ctit { font-weight:800; font-size:18px; }
+#cmsg { font-size:13px; color:var(--tx2); line-height:1.6; white-space:pre-line; }
+#cbtns { display:flex; gap:8px; }
+
+/* ═══════════════════════════════════
+   DASHBOARD STATS
+═══════════════════════════════════ */
+.sgrid { display:grid; grid-template-columns:1fr 1fr; gap:10px; flex-shrink:0; }
+.sc {
+  background:var(--s1); border:1px solid var(--br);
+  border-radius:var(--r); padding:13px 12px;
+  cursor:pointer; position:relative; overflow:hidden;
+  -webkit-tap-highlight-color:transparent;
+}
+.sc:active { background:var(--s2); }
+.sc::after {
+  content:''; position:absolute; top:0; left:0; right:0;
+  height:3px; border-radius:var(--r) var(--r) 0 0;
+}
+.sc-tot::after { background:linear-gradient(90deg,var(--ac),var(--ac2)); }
+.sc-pad::after { background:var(--gn); }
+.sc-exp::after { background:var(--or); }
+.sc-xpd::after { background:var(--rd); }
+.snum { font-weight:900; font-size:36px; line-height:1; margin-top:5px; }
+.sc-tot .snum { color:var(--ac); }
+.sc-pad .snum { color:var(--gn); }
+.sc-exp .snum { color:var(--or); }
+.sc-xpd .snum { color:var(--rd); }
+.slbl { font-size:10px; color:var(--tx3); text-transform:uppercase; letter-spacing:.7px; margin-top:2px; }
+.sico { position:absolute; right:10px; top:11px; font-size:22px; opacity:.1; }
+
+/* MINI ROW (dashboard lists) */
+.mrow {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 12px; background:var(--s1);
+  border:1px solid var(--br); border-radius:var(--rs);
+  cursor:pointer; flex-shrink:0;
+  -webkit-tap-highlight-color:transparent;
+}
+.mrow:active { background:var(--s2); }
+.mav {
+  width:36px; height:36px; border-radius:50%; flex-shrink:0;
+  overflow:hidden; background:var(--s3);
+  display:flex; align-items:center; justify-content:center;
+  font-weight:700; font-size:13px; color:var(--tx3);
+}
+.mav img { width:100%; height:100%; object-fit:cover; }
+.mi  { flex:1; min-width:0; }
+.mn  { font-weight:600; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ms  { font-size:11px; color:var(--tx3); margin-top:1px; }
+.pdot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.pdot.gn { background:var(--gn); }
+.pdot.or { background:var(--or); }
+.pdot.rd { background:var(--rd); }
+
+/* ═══════════════════════════════════
+   MEMBER CARDS
+═══════════════════════════════════ */
+.mc {
+  background:var(--s1); border:1px solid var(--br);
+  border-radius:var(--r); cursor:pointer;
+  border-left:3px solid var(--br); flex-shrink:0;
+  -webkit-tap-highlight-color:transparent;
+}
+.mc:active { background:var(--s2); }
+.mc-gn { border-left-color:var(--gn); }
+.mc-or { border-left-color:var(--or); }
+.mc-rd { border-left-color:var(--rd); }
+.mci   { padding:11px 13px; display:flex; align-items:center; gap:11px; }
+.mcp   {
+  width:44px; height:44px; border-radius:10px; flex-shrink:0;
+  overflow:hidden; background:var(--s3);
+  display:flex; align-items:center; justify-content:center;
+  font-weight:800; font-size:16px; color:var(--tx3);
+}
+.mcp img { width:100%; height:100%; object-fit:cover; }
+.mcin  { flex:1; min-width:0; }
+.mcn   { font-weight:700; font-size:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.mcr   { font-size:11px; color:var(--tx3); margin-top:1px; }
+.mctg  { display:flex; gap:4px; margin-top:4px; flex-wrap:wrap; }
+.mce   { font-size:11px; color:var(--tx3); margin-top:3px; }
+
+/* ═══════════════════════════════════
+   DETAIL DRAWER
+═══════════════════════════════════ */
+.dethd {
+  padding:18px 16px 14px; display:flex; flex-direction:column;
+  align-items:center; gap:7px; border-bottom:1px solid var(--br); text-align:center;
+}
+.detph {
+  width:76px; height:76px; border-radius:50%; overflow:hidden;
+  background:var(--s3); display:flex; align-items:center; justify-content:center;
+  font-weight:800; font-size:26px; color:var(--tx3); border:2px solid var(--br);
+  cursor:pointer; transition:opacity .15s;
+}
+.detph:active { opacity:.75; }
+.detph img { width:100%; height:100%; object-fit:cover; }
+
+/* ── PHOTO LIGHTBOX ── */
+#lightbox {
+  position:fixed; inset:0; background:rgba(0,0,0,.93);
+  z-index:400; display:none; align-items:center; justify-content:center; cursor:pointer;
+}
+#lightbox.open { display:flex; }
+#lightbox img { max-width:94vw; max-height:94vh; border-radius:10px; object-fit:contain; }
+.detn  { font-weight:800; font-size:21px; }
+.detr  { font-size:11px; color:var(--tx3); }
+.dettg { display:flex; gap:5px; flex-wrap:wrap; justify-content:center; }
+.igrid { display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:13px 16px; }
+.ic    { display:flex; flex-direction:column; gap:3px; }
+.ik    { font-size:10px; font-weight:700; color:var(--tx3); text-transform:uppercase; letter-spacing:.7px; }
+.iv    { font-size:13px; font-weight:600; }
+.dact  { padding:0 16px 8px; display:flex; flex-direction:column; gap:8px; }
+.drow  { display:flex; gap:8px; }
+
+/* ═══════════════════════════════════
+   ADD / EDIT FORM
+═══════════════════════════════════ */
+.phzone  { display:flex; flex-direction:column; align-items:center; gap:8px; }
+.phring  {
+  width:76px; height:76px; border-radius:50%;
+  background:var(--s3); border:2px dashed var(--br);
+  display:flex; align-items:center; justify-content:center;
+  font-size:26px; cursor:pointer; overflow:hidden;
+}
+.phring img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+.phbtns { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; }
+
+/* Plan tiles */
+.pgrid { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+.pt {
+  border:1px solid var(--br); border-radius:var(--rs);
+  padding:10px 8px; text-align:center; cursor:pointer;
+  background:var(--s2); -webkit-tap-highlight-color:transparent;
+}
+.pt.sel { border-color:var(--ac); background:rgba(255,69,0,.12); }
+.pt.sel .ptn { color:var(--ac); }
+.pt.sel .ptd { color:var(--ac2); }
+.ptn { font-weight:700; font-size:14px; }
+.ptd { font-size:11px; color:var(--tx3); margin-top:1px; }
+
+/* Status toggle 3-way */
+.trow { display:flex; border-radius:var(--rs); overflow:hidden; border:1px solid var(--br); }
+.to {
+  flex:1; padding:10px 4px; text-align:center; cursor:pointer;
+  font-weight:600; font-size:12px; border:none;
+  background:var(--s2); color:var(--tx3);
+  font-family:inherit; -webkit-tap-highlight-color:transparent;
+  border-right:1px solid var(--br);
+}
+.to:last-child { border-right:none; }
+.to.sp  { background:var(--gnb); color:var(--gn); }
+.to.sor { background:var(--orb); color:var(--or); }
+.to.su  { background:var(--rdb); color:var(--rd); }
+
+/* ═══════════════════════════════════
+   REMINDERS PAGE
+═══════════════════════════════════ */
+.abanner {
+  background:var(--orb); border:1px solid var(--orr);
+  border-radius:var(--r); padding:12px 14px;
+  display:flex; align-items:flex-start; gap:10px; flex-shrink:0;
+}
+.aico { font-size:20px; flex-shrink:0; margin-top:1px; }
+.ati  { font-weight:700; font-size:13px; color:var(--or); }
+.abo  { font-size:12px; color:var(--tx2); margin-top:3px; line-height:1.65; }
+
+.ri {
+  background:var(--s1); border:1px solid var(--br);
+  border-radius:var(--rs); padding:11px 12px;
+  display:flex; align-items:center; gap:10px;
+  border-left:3px solid var(--or); flex-shrink:0;
+}
+.rin { flex:1; min-width:0; }
+.rn  { font-weight:600; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.rs2 { font-size:11px; color:var(--tx3); margin-top:2px; }
+.rbtns { display:flex; gap:5px; }
+
+/* ═══════════════════════════════════
+   SETTINGS
+═══════════════════════════════════ */
+.sg   { display:flex; flex-direction:column; border-radius:var(--r); overflow:hidden; border:1px solid var(--br); }
+.si2  {
+  background:var(--s1); padding:13px 14px;
+  display:flex; align-items:center; gap:11px;
+  cursor:pointer; -webkit-tap-highlight-color:transparent;
+}
+.si2:active  { background:var(--s2); }
+.sico2 { font-size:18px; width:22px; text-align:center; flex-shrink:0; }
+.stx   { flex:1; }
+.silab { font-size:14px; font-weight:500; }
+.sisub { font-size:11px; color:var(--tx3); margin-top:2px; }
+.sarr  { color:var(--tx3); }
+.sdiv  { height:1px; background:var(--br); }
+
+.acard {
+  background:var(--s1); border:1px solid var(--br);
+  border-radius:var(--r); padding:14px;
+  display:flex; gap:12px; align-items:center;
+}
+.alog  {
+  width:48px; height:48px; border-radius:12px; flex-shrink:0;
+  background:linear-gradient(135deg,var(--ac),var(--ac2));
+  display:flex; align-items:center; justify-content:center; font-size:22px;
+}
+.anm   { font-weight:800; font-size:16px; }
+.aver  { font-size:11px; color:var(--tx3); margin-top:2px; }
+.adsc  { font-size:12px; color:var(--tx2); margin-top:5px; line-height:1.55; }
+
+/* ═══════════════════════════════════
+   PAGE FADE-IN
+═══════════════════════════════════ */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(6px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.page.active > * { animation: fadeUp .18s ease both; }
+.page.active > *:nth-child(1) { animation-delay:.02s; }
+.page.active > *:nth-child(2) { animation-delay:.05s; }
+.page.active > *:nth-child(3) { animation-delay:.08s; }
+.page.active > *:nth-child(4) { animation-delay:.11s; }
+.page.active > *:nth-child(5) { animation-delay:.14s; }
+</style>
+</head>
+<body>
+
+<div id="shell">
+
+  <!-- ══ HEADER ══ -->
+  <div id="hdr">
+    <div class="hdr-top">
+      <div class="hlogo">
+        <div class="lmark">
+          <svg viewBox="0 0 24 24"><path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14l1.43 1.43L2 7.71l1.43 1.43L2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22l1.43-1.43L16.29 22l2.14-2.14 1.43 1.43 1.43-1.43-1.43-1.43L22 16.29l-1.43-1.43z"/></svg>
+        </div>
+        <div>
+          <div class="lname">POWERFLEX GYM</div>
+          <div class="ltag">Member Management</div>
+        </div>
+      </div>
+      <div class="hbtns">
+        <div class="ibtn" onclick="checkReminders(true)">🔔</div>
+        <div class="ibtn" onclick="doExportAndMark()">💾</div>
+      </div>
+    </div>
+    <!-- TOP NAV TABS — safe from Android bottom gesture zone -->
+    <nav id="nav">
+      <button class="nb active" data-p="dashboard" onclick="goP('dashboard')">
+        <span class="ni">📊</span>Dashboard
+      </button>
+      <button class="nb" data-p="members" onclick="goP('members')">
+        <span class="ni">👥</span>Members
+      </button>
+      <button class="nb" data-p="reminders" onclick="goP('reminders')">
+        <span class="ni">🔔</span>
+        <span class="nbadge" id="rbadge">0</span>
+        Reminders
+      </button>
+      <button class="nb" data-p="settings" onclick="goP('settings')">
+        <span class="ni">⚙️</span>Settings
+      </button>
+    </nav>
+  </div>
+
+  <!-- ══ PAGES ══ -->
+  <div id="pages">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="pg-dashboard">
+      <div class="sgrid">
+        <div class="sc sc-tot" onclick="goM('all')">
+          <div class="sico">👥</div>
+          <div class="snum" id="s-tot">0</div>
+          <div class="slbl">Total Members</div>
+        </div>
+        <div class="sc sc-pad" onclick="goM('paid')">
+          <div class="sico">✅</div>
+          <div class="snum" id="s-pad">0</div>
+          <div class="slbl">Paid Active</div>
+        </div>
+        <div class="sc sc-exp" onclick="goM('expiring')">
+          <div class="sico">⏰</div>
+          <div class="snum" id="s-exp">0</div>
+          <div class="slbl">Expiring ≤3 Days</div>
+        </div>
+        <div class="sc sc-xpd" onclick="goM('expired')">
+          <div class="sico">🚫</div>
+          <div class="snum" id="s-xpd">0</div>
+          <div class="slbl">Expired</div>
+        </div>
+      </div>
+
+      <div class="shead">
+        <div class="stitle">⏰ Expiring This Week</div>
+        <div class="scnt" id="ec">0</div>
+      </div>
+      <div id="d-exp">
+        <div class="empty"><div class="eico">🎉</div><div class="etxt">Nobody expiring soon</div></div>
+      </div>
+
+      <div class="shead">
+        <div class="stitle">🆕 Recently Added</div>
+      </div>
+      <div id="d-rec">
+        <div class="empty"><div class="eico">👤</div><div class="etxt">No members yet. Tap + to add.</div></div>
+      </div>
+    </div>
+
+    <!-- MEMBERS -->
+    <div class="page" id="pg-members">
+      <div class="sw">
+        <span class="si">🔍</span>
+        <input class="sinput" type="search" placeholder="Search name or reg number…" id="search" oninput="renderM()">
+      </div>
+      <div class="chips">
+        <div class="chip active" data-f="all"      onclick="setF('all')">All</div>
+        <div class="chip"        data-f="paid"     onclick="setF('paid')">✅ Paid</div>
+        <div class="chip"        data-f="expiring" onclick="setF('expiring')">⏰ Expiring</div>
+        <div class="chip"        data-f="expired"  onclick="setF('expired')">🚫 Expired</div>
+      </div>
+      <div id="mlist" style="display:flex;flex-direction:column;gap:8px;"></div>
+    </div>
+
+    <!-- REMINDERS -->
+    <div class="page" id="pg-reminders">
+      <div class="abanner">
+        <div class="aico">📱</div>
+        <div>
+          <div class="ati">Automatic SMS Reminders</div>
+          <div class="abo">
+            <b>⏰ Expiring</b> → Daily SMS until expiry date<br>
+            <b>🚫 Expired</b> → One-time SMS after expiry
+          </div>
+        </div>
+      </div>
+      <div id="sms-perm-status"></div>
+      <button class="btn bpri bfull" onclick="checkReminders(true)">📨 Send SMS to All Now</button>
+      <button class="btn bgn  bfull" onclick="doExportAndMark()">📊 Export to Excel (Backup)</button>
+      <div class="shead" style="margin-top:2px">
+        <div class="stitle">📋 Pending Queue</div>
+        <div class="scnt" id="rc">0</div>
+      </div>
+      <div id="rlist">
+        <div class="empty"><div class="eico">✅</div><div class="etxt">No pending reminders</div></div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="page" id="pg-settings">
+      <div class="acard">
+        <div class="alog">💪</div>
+        <div>
+          <div class="anm">PowerFlex Gym</div>
+          <div class="aver">v3.0 · Auto-SMS · Offline</div>
+          <div class="adsc">Gym member management with auto status transitions and SMS reminders. All data stored only on this phone.</div>
+        </div>
+      </div>
+
+      <div class="stitle" style="padding-bottom:8px;border-bottom:1px solid var(--br)">⚙️ Actions</div>
+      <div class="sg">
+        <div class="si2" onclick="reqSMSPerm()">
+          <div class="sico2">📱</div>
+          <div class="stx"><div class="silab">Grant SMS Permission</div><div class="sisub">Required for silent auto-SMS (APK only)</div></div>
+          <div class="sarr">›</div>
+        </div>
+        <div class="sdiv"></div>
+        <div class="si2" onclick="doExportAndMark()">
+          <div class="sico2">📊</div>
+          <div class="stx"><div class="silab">Export to Excel</div><div class="sisub">Save all members as .xlsx backup</div></div>
+          <div class="sarr">›</div>
+        </div>
+        <div class="sdiv"></div>
+        <div class="si2" onclick="document.getElementById('import-xl').click()">
+          <div class="sico2">📥</div>
+          <div class="stx"><div class="silab">Import from Excel</div><div class="sisub">Restore members from backup file</div></div>
+          <div class="sarr">›</div>
+        </div>
+        <input type="file" id="import-xl" accept=".csv" onchange="importExcel(event)" style="display:none">
+        <div class="sdiv"></div>
+        <div class="si2" onclick="checkReminders(true)">
+          <div class="sico2">📨</div>
+          <div class="stx"><div class="silab">Send SMS Reminders Now</div><div class="sisub">Trigger all pending SMS immediately</div></div>
+          <div class="sarr">›</div>
+        </div>
+        <div class="sdiv"></div>
+        <div class="si2" onclick="addDemo()">
+          <div class="sico2">🧪</div>
+          <div class="stx"><div class="silab">Add Demo Members</div><div class="sisub">Load 5 sample members to test</div></div>
+          <div class="sarr">›</div>
+        </div>
+        <div class="sdiv"></div>
+        <div class="si2" onclick="confirmClear()">
+          <div class="sico2">🗑️</div>
+          <div class="stx"><div class="silab" style="color:var(--rd)">Clear All Data</div><div class="sisub">Permanently delete all members</div></div>
+          <div class="sarr">›</div>
+        </div>
+      </div>
+
+      <div class="stitle" style="padding-bottom:8px;border-bottom:1px solid var(--br)">📊 Status Rules</div>
+      <div class="card" style="padding:14px">
+        <div style="font-size:13px;color:var(--tx2);line-height:2">
+          <span style="color:var(--gn)">●</span> <b>Paid</b> — You set this manually when member pays<br>
+          <span style="color:var(--or)">●</span> <b>Expiring</b> — Auto when ≤3 days left. Daily SMS sent.<br>
+          <span style="color:var(--rd)">●</span> <b>Expired</b> — Auto after expiry. One SMS sent once.<br><br>
+          To renew: Edit → set <b>Paid</b> + new expiry date.
+        </div>
+      </div>
+
+      <div class="stitle" style="padding-bottom:8px;border-bottom:1px solid var(--br)">🔒 Data Storage</div>
+      <div class="card" style="padding:14px;border-left:3px solid var(--gn)">
+        <div style="font-size:13px;color:var(--tx2);line-height:2">
+          <span style="color:var(--gn);font-weight:700">✅ Stored only on this phone</span><br>
+          No internet needed · No server · No cloud<br><br>
+          <span style="color:var(--rd);font-weight:700">⚠️ Data lost if you clear Chrome or reset phone</span><br>
+          👉 Export Excel weekly → send to WhatsApp/Drive
+        </div>
+      </div>
+    </div>
+
+      <!-- PWA Install -->
+      <div class="stitle" style="padding-bottom:8px;border-bottom:1px solid var(--br)">📲 Install App</div>
+      <div class="card" style="padding:14px 16px;">
+        <div id="pwa-status" style="font-size:13px;margin-bottom:12px;"></div>
+        <button id="pwa-install-btn" class="btn bpri bfull" onclick="doInstall()" style="display:none">
+          📲 Install PowerFlex on Home Screen
+        </button>
+        <div style="font-size:12px;color:var(--tx3);margin-top:10px;line-height:1.7;">
+          <b style="color:var(--tx2)">Manual install steps:</b><br>
+          1. Tap Chrome menu (⋮) → <b>Add to Home screen</b><br>
+          2. Tap <b>Install</b> or <b>Add</b><br>
+          3. PowerFlex icon appears on home screen<br>
+          4. Open it — works fully offline ✅
+        </div>
+      </div>
+
+    </div><!-- /pg-settings -->
+  </div><!-- /pages -->
+
+
+</div><!-- /shell -->
+
+<!-- FAB -->
+<button id="fab" onclick="openAdd()">+</button>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- CONFIRM -->
+<div id="cbg" onclick="closeC()"></div>
+<div id="cbox">
+  <div id="ctit">Confirm</div>
+  <div id="cmsg"></div>
+  <div id="cbtns">
+    <button class="btn bghost bfull" onclick="closeC()">Cancel</button>
+    <button class="btn brd bfull" id="cok">Confirm</button>
+  </div>
+</div>
+
+<!-- ADD / EDIT DRAWER -->
+<div class="ov" id="ov-form" onclick="bgC(event,'ov-form')">
+  <div class="drw" onclick="event.stopPropagation()">
+    <div class="dpip"></div>
+    <div class="dhd">
+      <div class="dtit" id="ftit">Add Member</div>
+      <div class="ibtn" onclick="closeOv('ov-form')">✕</div>
+    </div>
+    <div class="dbdy">
+
+      <!-- Photo -->
+      <div class="fg">
+        <div class="fl">Member Photo</div>
+        <div class="phzone">
+          <div class="phring" id="phring" onclick="document.getElementById('camin').click()">
+            <span id="phph">📷</span>
+          </div>
+          <div class="phbtns">
+            <button class="btn bghost bsm" onclick="document.getElementById('camin').click()">📷 Camera</button>
+            <button class="btn bghost bsm" onclick="document.getElementById('galin').click()">🖼 Gallery</button>
+            <button class="btn bghost bsm" onclick="clrPh()">✕ Clear</button>
+          </div>
+          <input type="file" id="camin" accept="image/*" capture="environment" onchange="onPh(event)" style="display:none">
+          <input type="file" id="galin" accept="image/*" onchange="onPh(event)" style="display:none">
+        </div>
+      </div>
+
+      <div class="fg">
+        <div class="fl">Full Name *</div>
+        <input class="fi" type="text" id="fn" placeholder="Member's full name">
+      </div>
+      <div class="fg">
+        <div class="fl">Phone Number *</div>
+        <input class="fi" type="tel" id="fp" placeholder="+91 98765 43210">
+      </div>
+      <div class="fg">
+        <div class="fl">Join Date <span style="color:var(--tx3);font-size:9px">(fixed forever)</span></div>
+        <input class="fi" type="date" id="fj">
+      </div>
+      <div class="fg">
+        <div class="fl">Renew Date <span style="color:var(--or);font-size:9px">(used to calculate next expiry)</span></div>
+        <input class="fi" type="date" id="fr" oninput="onRenewChange()">
+      </div>
+      <div id="renew-info" style="display:none;background:var(--orb);border:1px solid var(--orr);border-radius:var(--rs);padding:10px 13px;font-size:12px;color:var(--or);line-height:1.7;"></div>
+
+      <!-- Plan -->
+      <div class="fg">
+        <div class="fl">Subscription Plan</div>
+        <div class="pgrid">
+          <div class="pt" data-m="1"  onclick="pickP(1)"><div class="ptn">1 Month</div><div class="ptd">30 days</div></div>
+          <div class="pt" data-m="3"  onclick="pickP(3)"><div class="ptn">3 Months</div><div class="ptd">90 days</div></div>
+          <div class="pt" data-m="6"  onclick="pickP(6)"><div class="ptn">6 Months</div><div class="ptd">180 days</div></div>
+          <div class="pt" data-m="12" onclick="pickP(12)"><div class="ptn">12 Months</div><div class="ptd">365 days</div></div>
+        </div>
+      </div>
+
+      <div class="fg">
+        <div class="fl">Valid Till (auto-set by plan, or edit manually)</div>
+        <input class="fi" type="date" id="fe" oninput="clrPlan()">
+      </div>
+
+      <!-- Status 3-way -->
+      <div class="fg">
+        <div class="fl">Payment Status <span style="color:var(--tx3);font-size:9px">(Expiring/Expired auto-set by date)</span></div>
+        <div class="trow">
+          <button class="to sp"  id="tpad" onclick="setPd('Paid')">✅ Paid</button>
+          <button class="to"     id="texp" onclick="setPd('Expiring')">⏰ Expiring</button>
+          <button class="to"     id="tunp" onclick="setPd('Expired')">🚫 Expired</button>
+        </div>
+      </div>
+
+      <input type="hidden" id="fid">
+    </div>
+    <div class="dft">
+      <button class="btn bghost" style="width:36%" onclick="closeOv('ov-form')">Cancel</button>
+      <button class="btn bpri" style="flex:1" onclick="saveM()">💾 Save Member</button>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL DRAWER -->
+<div class="ov" id="ov-det" onclick="bgC(event,'ov-det')">
+  <div class="drw" onclick="event.stopPropagation()" style="max-height:94dvh;overflow-y:auto;-webkit-overflow-scrolling:touch;display:block;">
+    <div class="dpip"></div>
+    <div class="dethd">
+      <div class="detph" id="dph"></div>
+      <div class="detn"  id="dnm"></div>
+      <div class="detr"  id="drg"></div>
+      <div class="dettg" id="dtg"></div>
+    </div>
+    <div class="igrid" id="dgrd"></div>
+    <div class="dact">
+      <button class="btn bgn bfull" id="dwa">💬 WhatsApp Reminder</button>
+      <button class="btn bor bfull" id="dsms">📱 SMS Reminder</button>
+      <div class="drow">
+        <button class="btn bghost bfull" id="dedt">✏️ Edit</button>
+        <button class="btn brd    bfull" id="ddel">🗑️ Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PHOTO LIGHTBOX -->
+<div id="lightbox" onclick="closeLB()">
+  <img id="lb-img" src="" alt="">
+</div>
+
+<script>
+'use strict';
+
+/* ═══════════════════════════════════
+   ANDROID NATIVE SMS BRIDGE
+   window.AndroidSMS is injected by MainActivity.java in APK mode.
+   In Chrome browser, falls back to sms: URI (opens SMS composer).
+═══════════════════════════════════ */
+const NativeSMS = {
+  available:         () => typeof window.AndroidSMS !== 'undefined',
+  send:        (p,m) => { try { return window.AndroidSMS.sendSMS(p,m); } catch(e){ return false; } },
+  hasPermission:     () => { try { return window.AndroidSMS.hasSMSPermission(); } catch(e){ return false; } },
+  requestPermission: () => { try { window.AndroidSMS.requestSMSPermission(); } catch(e){} }
+};
+
+/* ═══════════════════════════════════
+   INDEXEDDB
+═══════════════════════════════════ */
+const DBNAME = 'PowerFlexDB3';
+let db;
+
+function openDB() {
+  return new Promise((ok, fail) => {
+    const r = indexedDB.open(DBNAME, 1);
+    r.onupgradeneeded = e => {
+      const d = e.target.result;
+      if (!d.objectStoreNames.contains('members'))
+        d.createObjectStore('members', { keyPath:'id', autoIncrement:true });
+      if (!d.objectStoreNames.contains('meta'))
+        d.createObjectStore('meta', { keyPath:'k' });
+    };
+    r.onsuccess = e => { db = e.target.result; ok(db); };
+    r.onerror   = e => fail(e);
+  });
+}
+
+const txs = (s, m='readonly') => db.transaction(s, m).objectStore(s);
+const dbG = (s, k) => new Promise((ok,f) => { const r=txs(s).get(k); r.onsuccess=()=>ok(r.result); r.onerror=f; });
+const dbP = (s, v) => new Promise((ok,f) => { const r=txs(s,'readwrite').put(v); r.onsuccess=()=>ok(r.result); r.onerror=f; });
+const dbD = (s, k) => new Promise((ok,f) => { const r=txs(s,'readwrite').delete(k); r.onsuccess=ok; r.onerror=f; });
+const dbA = (s)    => new Promise((ok,f) => { const r=txs(s).getAll(); r.onsuccess=()=>ok(r.result); r.onerror=f; });
+
+async function nextReg() {
+  let m = await dbG('meta','reg');
+  const n = m ? m.v + 1 : 1001;
+  await dbP('meta', { k:'reg', v:n });
+  return 'PF' + String(n).padStart(4,'0');
+}
+
+/* ═══════════════════════════════════
+   STATE
+═══════════════════════════════════ */
+let members = [], filter = 'all', photoB64 = null, editId = null, planSel = null;
+let _curPaid = 'Paid';
+
+/* ═══════════════════════════════════
+   UTILS
+═══════════════════════════════════ */
+const toStr = () => new Date().toISOString().split('T')[0];
+const fmt   = d  => {
+  if (!d) return 'N/A';
+  return new Date(d + 'T00:00:00').toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
+};
+const days  = d  => {
+  if (!d) return 9999;
+  const n = new Date(); n.setHours(0,0,0,0);
+  return Math.round((new Date(d + 'T00:00:00') - n) / 86400000);
+};
+const init2 = n  => (n||'?').split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+const pdays = { 1:30, 3:90, 6:180, 12:365 };
+const esc   = s  => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+/* ═══════════════════════════════════
+   STATUS SYSTEM
+   paidStatus field: 'Paid' | 'Expiring' | 'Expired'
+   App auto-transitions: Paid→Expiring→Expired by date.
+   User can manually reset back to Paid (on renewal).
+═══════════════════════════════════ */
+function stat(m) {
+  return (m.paidStatus || 'Paid').toLowerCase();
+}
+
+async function autoUpdateStatuses() {
+  let changed = false;
+  for (const m of members) {
+    const d   = days(m.validTill);
+    const cur = m.paidStatus || 'Paid';
+    let next  = cur;
+
+    if (cur === 'Paid') {
+      if      (d < 0)  next = 'Expired';
+      else if (d <= 3) next = 'Expiring';
+    } else if (cur === 'Expiring') {
+      if (d < 0) next = 'Expired';
+    }
+    // Expired never auto-reverts — only manual Paid resets it
+
+    if (next !== cur) {
+      m.paidStatus = next;
+      await dbP('members', m);
+      changed = true;
+    }
+  }
+  return changed;
+}
+
+/* ═══════════════════════════════════
+   SMS
+═══════════════════════════════════ */
+function smsMsg(m) {
+  const s = stat(m);
+  if (s === 'expired') {
+    return `Hello ${m.name}, your PowerFlex Gym membership has expired. You cannot use gym services further. Please contact us to renew.`;
+  }
+  const d    = days(m.validTill);
+  const dTxt = d === 0 ? 'TODAY' : d === 1 ? 'tomorrow' : `in ${d} days (${fmt(m.validTill)})`;
+  return `Hello ${m.name}, your PowerFlex Gym membership is expiring ${dTxt}. Please renew immediately to continue using gym services.`;
+}
+
+function sendSMS(m, silent = false) {
+  const phone = (m.phone || '').replace(/[^\d+]/g, '');
+  const msg   = smsMsg(m);
+  if (NativeSMS.available()) {
+    if (!NativeSMS.hasPermission()) { NativeSMS.requestPermission(); toast('⚠️ Grant SMS permission first'); return false; }
+    const ok = NativeSMS.send(phone, msg);
+    if (ok && !silent) toast(`📱 SMS sent to ${m.name}`);
+    return ok;
+  } else {
+    if (!silent) window.location.href = `sms:${phone}?body=${encodeURIComponent(msg)}`;
+    return false;
+  }
+}
+
+function reqSMSPerm() {
+  NativeSMS.requestPermission();
+  toast('📱 SMS permission requested');
+  setTimeout(updateSMSStatus, 1500);
+}
+
+function updateSMSStatus() {
+  const el = document.getElementById('sms-perm-status');
+  if (!el) return;
+  if (NativeSMS.available()) {
+    el.innerHTML = NativeSMS.hasPermission()
+      ? '<div style="background:var(--gnb);color:var(--gn);border:1px solid var(--gnr);border-radius:8px;padding:9px 13px;font-size:12px;font-weight:600;margin-bottom:4px">✅ SMS Permission Granted — Auto-SMS is ACTIVE</div>'
+      : '<div style="background:var(--orb);color:var(--or);border:1px solid var(--orr);border-radius:8px;padding:9px 13px;font-size:12px;font-weight:600;margin-bottom:4px">⚠️ SMS Permission needed — tap Settings → Grant SMS</div>';
+  } else {
+    el.innerHTML = '<div style="background:var(--s2);color:var(--tx3);border:1px solid var(--br);border-radius:8px;padding:9px 13px;font-size:12px;margin-bottom:4px">ℹ️ Browser mode — SMS opens composer (1 tap to send)</div>';
+  }
+}
+
+/* ═══════════════════════════════════
+   LOAD
+═══════════════════════════════════ */
+async function load() {
+  members = await dbA('members');
+  members.sort((a,b) => b.id - a.id);
+}
+
+/* ═══════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════ */
+function goP(p) {
+  document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(x => x.classList.toggle('active', x.dataset.p === p));
+  document.getElementById('pg-' + p).classList.add('active');
+  document.getElementById('fab').classList.toggle('show', p === 'members');
+  if (p === 'dashboard') refreshDash();
+  if (p === 'members')   renderM();
+  if (p === 'reminders') { renderRem(); updateSMSStatus(); }
+}
+
+function goM(f) { setF(f); goP('members'); }
+
+function setF(f) {
+  filter = f;
+  document.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c.dataset.f === f));
+  renderM();
+}
+
+/* ═══════════════════════════════════
+   DASHBOARD
+═══════════════════════════════════ */
+async function refreshDash() {
+  await load();
+  document.getElementById('s-tot').textContent = members.length;
+  document.getElementById('s-pad').textContent = members.filter(m => stat(m) === 'paid').length;
+  document.getElementById('s-exp').textContent = members.filter(m => stat(m) === 'expiring').length;
+  document.getElementById('s-xpd').textContent = members.filter(m => stat(m) === 'expired').length;
+
+  const exList = members.filter(m => stat(m) === 'expiring').slice(0, 6);
+  document.getElementById('ec').textContent = exList.length;
+  document.getElementById('d-exp').innerHTML = exList.length
+    ? exList.map(miniR).join('')
+    : '<div class="empty"><div class="eico">🎉</div><div class="etxt">Nobody expiring soon</div></div>';
+
+  const rec = members.slice(0, 5);
+  document.getElementById('d-rec').innerHTML = rec.length
+    ? rec.map(miniR).join('')
+    : '<div class="empty"><div class="eico">👤</div><div class="etxt">No members yet. Tap + to add.</div></div>';
+
+  updateBadge();
+}
+
+function miniR(m) {
+  const s   = stat(m);
+  const d   = days(m.validTill);
+  const sub = s === 'expired' ? 'Expired' : s === 'expiring' ? `${d}d left` : 'Paid';
+  const dot = s === 'paid' ? 'gn' : s === 'expiring' ? 'or' : 'rd';
+  const av  = m.photo ? `<img src="${m.photo}" alt="">` : init2(m.name);
+  return `<div class="mrow" onclick="openDet(${m.id})">
+    <div class="mav">${av}</div>
+    <div class="mi"><div class="mn">${esc(m.name)}</div><div class="ms">${m.regNo} · ${sub}</div></div>
+    <div class="pdot ${dot}"></div>
+  </div>`;
+}
+
+/* ═══════════════════════════════════
+   MEMBERS LIST
+═══════════════════════════════════ */
+async function renderM() {
+  await load();
+  const q = (document.getElementById('search').value || '').toLowerCase().trim();
+  let list = members;
+  if (q)               list = list.filter(m => m.name.toLowerCase().includes(q) || (m.regNo||'').toLowerCase().includes(q));
+  if (filter==='paid')     list = list.filter(m => stat(m) === 'paid');
+  if (filter==='expiring') list = list.filter(m => stat(m) === 'expiring');
+  if (filter==='expired')  list = list.filter(m => stat(m) === 'expired');
+
+  const el = document.getElementById('mlist');
+  if (!list.length) {
+    el.innerHTML = `<div class="empty"><div class="eico">👤</div><div class="etxt">${filter==='all'&&!q?'No members. Tap + to add.':'No matches found.'}</div></div>`;
+    return;
+  }
+  el.innerHTML = list.map(mCard).join('');
+}
+
+function mCard(m) {
+  const s   = stat(m);
+  const d   = days(m.validTill);
+  const cls = s === 'expiring' ? 'mc-or' : s === 'paid' ? 'mc-gn' : 'mc-rd';
+  const av  = m.photo ? `<img src="${m.photo}" alt="">` : init2(m.name);
+  const bdg = s === 'expired'
+    ? `<span class="badge brd2">🚫 Expired</span>`
+    : s === 'expiring'
+    ? `<span class="badge bor2">⏰ ${d}d left</span>`
+    : `<span class="badge bgn2">✅ Paid</span>`;
+  const plan = m.plan ? `<span class="badge bgr2">${m.plan}M</span>` : '';
+  return `<div class="mc ${cls}" onclick="openDet(${m.id})">
+    <div class="mci">
+      <div class="mcp">${av}</div>
+      <div class="mcin">
+        <div class="mcn">${esc(m.name)}</div>
+        <div class="mcr">${m.regNo} · 📞 ${esc(m.phone)}</div>
+        <div class="mctg">${bdg}${plan}</div>
+        <div class="mce">📅 Expires: ${fmt(m.validTill)}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ═══════════════════════════════════
+   ADD / EDIT
+═══════════════════════════════════ */
+function openAdd() {
+  editId = null; photoB64 = null; planSel = null; _curPaid = 'Paid';
+  document.getElementById('ftit').textContent = 'Add Member';
+  document.getElementById('fn').value = '';
+  document.getElementById('fp').value = '';
+  document.getElementById('fj').value = toStr();
+  document.getElementById('fr').value = toStr();
+  document.getElementById('fe').value = '';
+  document.getElementById('fid').value = '';
+  document.getElementById('renew-info').style.display = 'none';
+  document.querySelectorAll('.pt').forEach(t => t.classList.remove('sel'));
+  setPd('Paid'); rstPh(); openOv('ov-form');
+}
+
+async function openEdit(id) {
+  const m = members.find(x => x.id === id); if (!m) return;
+  editId = id; photoB64 = m.photo || null; planSel = m.plan || null;
+  _curPaid = m.paidStatus || 'Paid';
+  document.getElementById('ftit').textContent = 'Edit / Renew Member';
+  document.getElementById('fn').value  = m.name;
+  document.getElementById('fp').value  = m.phone;
+  document.getElementById('fj').value  = m.joinDate || '';
+  document.getElementById('fr').value  = m.renewDate || m.joinDate || toStr();
+  document.getElementById('fe').value  = m.validTill || '';
+  document.getElementById('fid').value = id;
+  document.querySelectorAll('.pt').forEach(t => t.classList.toggle('sel', parseInt(t.dataset.m) === m.plan));
+  setPd(_curPaid);
+  if (m.photo) { document.getElementById('phring').innerHTML = `<img src="${m.photo}" alt="">`; } else rstPh();
+  const ri = document.getElementById('renew-info');
+  ri.style.display = 'block';
+  ri.innerHTML = `ℹ️ <b>Joining Date:</b> ${fmt(m.joinDate)} (fixed forever)<br><b>Last Renewed:</b> ${fmt(m.renewDate || m.joinDate)}<br>To renew: update <b>Renew Date</b> to today, pick a plan, set status <b>Paid</b>.`;
+  closeOv('ov-det'); openOv('ov-form');
+}
+
+async function saveM() {
+  const name   = document.getElementById('fn').value.trim();
+  const phone  = document.getElementById('fp').value.trim();
+  const join   = document.getElementById('fj').value || toStr();
+  const renew  = document.getElementById('fr').value || toStr();
+  const expiry = document.getElementById('fe').value;
+  const paid   = _curPaid || 'Paid';
+  if (!name)   { toast('⚠️ Enter member name'); return; }
+  if (!phone)  { toast('⚠️ Enter phone number'); return; }
+  if (!expiry) { toast('⚠️ Set expiry date'); return; }
+
+  if (editId) {
+    const m = members.find(x => x.id === editId);
+    const newRenewDate = (paid === 'Paid' && planSel) ? renew : (m.renewDate || m.joinDate);
+    Object.assign(m, { name, phone, joinDate:join, renewDate:newRenewDate, validTill:expiry, paidStatus:paid, plan:planSel, photo:photoB64 });
+    if (paid === 'Paid') { m.lastSmsSent = null; m.expiredSmsSent = false; }
+    await dbP('members', m);
+    toast('✅ Member updated');
+  } else {
+    const reg = await nextReg();
+    await dbP('members', {
+      regNo:reg, name, phone, joinDate:join, renewDate:renew, validTill:expiry,
+      paidStatus:paid, plan:planSel, photo:photoB64,
+      lastSmsSent:null, expiredSmsSent:false,
+      createdAt:new Date().toISOString()
+    });
+    toast('✅ Member added — ' + reg);
+  }
+  closeOv('ov-form');
+  await load(); renderM(); refreshDash(); updateBadge();
+}
+
+function pickP(m) {
+  planSel = m;
+  document.querySelectorAll('.pt').forEach(t => t.classList.toggle('sel', parseInt(t.dataset.m) === m));
+  const r = document.getElementById('fr').value || toStr();
+  const d = new Date(r + 'T00:00:00');
+  d.setDate(d.getDate() + pdays[m]);
+  document.getElementById('fe').value = d.toISOString().split('T')[0];
+}
+function onRenewChange() { if (planSel) pickP(planSel); }
+function clrPlan() { planSel = null; document.querySelectorAll('.pt').forEach(t => t.classList.remove('sel')); }
+
+function setPd(v) {
+  _curPaid = v;
+  document.getElementById('tpad').className = 'to' + (v === 'Paid'     ? ' sp'  : '');
+  document.getElementById('texp').className = 'to' + (v === 'Expiring' ? ' sor' : '');
+  document.getElementById('tunp').className = 'to' + (v === 'Expired'  ? ' su'  : '');
+}
+
+function onPh(e) {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = ev => { photoB64 = ev.target.result; document.getElementById('phring').innerHTML = `<img src="${photoB64}" alt="">`; };
+  r.readAsDataURL(f); e.target.value = '';
+}
+function clrPh() { photoB64 = null; rstPh(); }
+function rstPh() { document.getElementById('phring').innerHTML = '<span>📷</span>'; }
+
+/* ═══════════════════════════════════
+   DETAIL DRAWER
+═══════════════════════════════════ */
+async function openDet(id) {
+  await load();
+  const m = members.find(x => x.id === id); if (!m) return;
+  const s = stat(m);
+  const d = days(m.validTill);
+
+  const ph = document.getElementById('dph');
+  ph.innerHTML = m.photo ? `<img src="${m.photo}" alt="">` : init2(m.name);
+  ph.onclick = m.photo ? () => openLB(m.photo) : null;
+  document.getElementById('dnm').textContent = m.name;
+  document.getElementById('drg').textContent = m.regNo;
+
+  const tg = s === 'expired'
+    ? `<span class="badge brd2">🚫 Expired</span>`
+    : s === 'expiring'
+    ? `<span class="badge bor2">⏰ Expiring — ${d} day${d!==1?'s':''} left</span>`
+    : `<span class="badge bgn2">✅ Paid & Active</span>`;
+  const pl = m.plan ? `<span class="badge bgr2">${m.plan} Month Plan</span>` : '';
+  document.getElementById('dtg').innerHTML = tg + pl;
+
+  const dc = s === 'paid' ? 'var(--gn)' : s === 'expiring' ? 'var(--or)' : 'var(--rd)';
+  const dStr = d < 0 ? 'Expired' : d === 0 ? 'TODAY' : d + ' days';
+  const stStr = s === 'paid' ? '✅ Paid & Active' : s === 'expiring' ? '⏰ Expiring' : '🚫 Expired';
+
+  document.getElementById('dgrd').innerHTML = `
+    <div class="ic"><div class="ik">Phone</div><div class="iv">📞 ${esc(m.phone)}</div></div>
+    <div class="ic"><div class="ik">Join Date</div><div class="iv">${fmt(m.joinDate)}</div></div>
+    <div class="ic"><div class="ik">Last Renewed</div><div class="iv">🔄 ${fmt(m.renewDate || m.joinDate)}</div></div>
+    <div class="ic"><div class="ik">Valid Till</div><div class="iv" style="color:${dc}">📅 ${fmt(m.validTill)}</div></div>
+    <div class="ic"><div class="ik">Days Left</div><div class="iv" style="color:${dc}">⏳ ${dStr}</div></div>
+    <div class="ic"><div class="ik">Status</div><div class="iv" style="color:${dc}">${stStr}</div></div>`;
+
+  const waMsg = encodeURIComponent(smsMsg(m));
+  const raw   = (m.phone || '').replace(/[^\d+]/g, '');
+  document.getElementById('dwa').onclick  = () => window.open(`https://wa.me/${raw}?text=${waMsg}`, '_blank');
+  document.getElementById('dsms').onclick = () => sendSMS(m);
+  document.getElementById('dedt').onclick = () => openEdit(id);
+  document.getElementById('ddel').onclick = () => confirmDel(id);
+  openOv('ov-det');
+}
+
+/* ═══════════════════════════════════
+   REMINDERS
+═══════════════════════════════════ */
+async function checkReminders(manual = false) {
+  await load();
+  const changed = await autoUpdateStatuses();
+  if (changed) { await load(); refreshDash(); }
+
+  const today      = toStr();
+  const expiring   = members.filter(m => stat(m) === 'expiring');
+  const justExpired = members.filter(m => stat(m) === 'expired' && !m.expiredSmsSent);
+
+  updateBadge(expiring.length + justExpired.length);
+
+  // Collect who needs SMS today
+  const toSend = [];
+  for (const m of expiring)    { if (m.lastSmsSent !== today)  toSend.push({ m, type:'expiring' }); }
+  for (const m of justExpired) { toSend.push({ m, type:'expired' }); }
+
+  if (!toSend.length) {
+    if (manual) toast('✅ All SMS up to date');
+    renderRem(); return;
+  }
+
+  if (NativeSMS.available() && NativeSMS.hasPermission()) {
+    let count = 0;
+    for (const { m, type } of toSend) {
+      const ok = sendSMS(m, true);
+      if (ok) {
+        if (type === 'expiring') m.lastSmsSent   = today;
+        else                     m.expiredSmsSent = true;
+        await dbP('members', m);
+        count++;
+      }
+    }
+    if (manual || count > 0) toast(`📱 SMS sent to ${count} member${count !== 1 ? 's' : ''}`);
+  } else {
+    if (manual && toSend.length) {
+      const { m } = toSend[0];
+      sendSMS(m, false);
+      if (toSend.length > 1) toast(`📱 ${toSend.length} pending. Sending first.`);
+    }
+  }
+  renderRem();
+}
+
+async function renderRem() {
+  await load();
+  const today      = toStr();
+  const expiring   = members.filter(m => stat(m) === 'expiring');
+  const expired    = members.filter(m => stat(m) === 'expired');
+  const total      = expiring.length + expired.length;
+  document.getElementById('rc').textContent = total;
+
+  const el = document.getElementById('rlist');
+  if (!total) {
+    el.innerHTML = '<div class="empty"><div class="eico">✅</div><div class="etxt">No pending reminders</div></div>';
+    return;
+  }
+
+  let html = '';
+
+  if (expiring.length) {
+    html += `<div class="shead"><div class="stitle" style="color:var(--or)">⏰ Expiring — Daily SMS</div><div class="scnt">${expiring.length}</div></div>`;
+    html += expiring.map(m => {
+      const d       = days(m.validTill);
+      const smsDone = m.lastSmsSent === today;
+      const av      = m.photo ? `<img src="${m.photo}">` : `<span style="font-size:11px;font-weight:700">${init2(m.name)}</span>`;
+      return `<div class="ri" style="border-left-color:var(--or)">
+        <div class="mav" style="border-radius:8px;width:40px;height:40px">${av}</div>
+        <div class="rin">
+          <div class="rn">${esc(m.name)}</div>
+          <div class="rs2">⏳ ${d} day${d!==1?'s':''} left · 📞 ${esc(m.phone)}</div>
+          <div class="rs2" style="color:${smsDone?'var(--gn)':'var(--tx3)'}">
+            ${smsDone ? '✅ SMS sent today' : '📤 SMS pending today'}
+          </div>
+        </div>
+        <div class="rbtns">
+          <button class="btn bor bsm" onclick="sendSMSManual(${m.id})">SMS</button>
+          <button class="btn bgn bsm" onclick="openWA(${m.id})">WA</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  if (expired.length) {
+    html += `<div class="shead" style="margin-top:10px"><div class="stitle" style="color:var(--rd)">🚫 Expired — One-time SMS</div><div class="scnt">${expired.length}</div></div>`;
+    html += expired.map(m => {
+      const smsDone = m.expiredSmsSent === true;
+      const av      = m.photo ? `<img src="${m.photo}">` : `<span style="font-size:11px;font-weight:700">${init2(m.name)}</span>`;
+      return `<div class="ri" style="border-left-color:var(--rd)">
+        <div class="mav" style="border-radius:8px;width:40px;height:40px">${av}</div>
+        <div class="rin">
+          <div class="rn">${esc(m.name)}</div>
+          <div class="rs2">📅 Expired ${fmt(m.validTill)} · 📞 ${esc(m.phone)}</div>
+          <div class="rs2" style="color:${smsDone?'var(--gn)':'var(--tx3)'}">
+            ${smsDone ? '✅ Expired SMS sent' : '📤 Expired SMS pending'}
+          </div>
+        </div>
+        <div class="rbtns">
+          <button class="btn brd bsm" onclick="sendSMSManual(${m.id})">SMS</button>
+          <button class="btn bgn bsm" onclick="openWA(${m.id})">WA</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  el.innerHTML = html;
+}
+
+async function sendSMSManual(id) {
+  await load();
+  const m = members.find(x => x.id === id); if (!m) return;
+  sendSMS(m, false);
+  const today = toStr();
+  if (stat(m) === 'expiring') m.lastSmsSent    = today;
+  if (stat(m) === 'expired')  m.expiredSmsSent = true;
+  await dbP('members', m);
+  setTimeout(renderRem, 600);
+}
+
+function openWA(id) {
+  const m = members.find(x => x.id === id); if (!m) return;
+  const raw = (m.phone || '').replace(/[^\d+]/g,'');
+  window.open(`https://wa.me/${raw}?text=${encodeURIComponent(smsMsg(m))}`, '_blank');
+}
+
+function updateBadge(count) {
+  if (count === undefined)
+    count = members.filter(m => stat(m) === 'expiring' || (stat(m) === 'expired' && !m.expiredSmsSent)).length;
+  const b = document.getElementById('rbadge');
+  b.textContent = count;
+  b.style.display = count > 0 ? 'flex' : 'none';
+}
+
+/* ═══════════════════════════════════
+   EXPORT / IMPORT
+═══════════════════════════════════ */
+/* ═══════════════════════════════════
+   OFFLINE EXCEL EXPORT
+   Pure JS — no CDN needed, works in WebIntoApp APK
+═══════════════════════════════════ */
+
+// Minimal Excel builder — creates a real .xlsx binary (ZIP-based)
+async function doExport() {
+  await load();
+  if (!members.length) { toast('⚠️ No members to export'); return; }
+
+  const rows = [
+    ['Reg No','Name','Phone','Join Date','Last Renewed','Plan (Months)','Valid Till','Days Left','Status'],
+    ...members.map(m => [
+      m.regNo, m.name, m.phone,
+      fmt(m.joinDate),
+      fmt(m.renewDate || m.joinDate),
+      m.plan || 'Custom',
+      fmt(m.validTill),
+      days(m.validTill),
+      m.paidStatus || 'Paid'
+    ])
+  ];
+
+  try {
+    const blob = buildXlsx(rows);
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = `PowerFlex_${toStr()}.xlsx`;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 1000);
+    toast('📊 Excel exported!');
+  } catch(e) {
+    // Fallback: export as CSV (always works)
+    exportCSV(rows);
+  }
+}
+
+function exportCSV(rows) {
+  const csv = rows.map(r => r.map(v => `"${String(v||'').replace(/"/g,'""')}"`).join(',')).join('\r\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `PowerFlex_${toStr()}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 1000);
+  toast('📊 Exported as CSV (Excel-compatible)');
+}
+
+// Build a minimal valid .xlsx file without any library
+function buildXlsx(rows) {
+  // Encode string to UTF-8 bytes
+  const enc = s => new TextEncoder().encode(s);
+
+  // Escape XML special chars
+  const xesc = s => String(s||'')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+  // Build shared strings table
+  const strings = [];
+  const strMap  = {};
+  const si = v => {
+    const s = String(v ?? '');
+    if (strMap[s] === undefined) { strMap[s] = strings.length; strings.push(s); }
+    return strMap[s];
+  };
+
+  // Pre-populate shared strings
+  rows.forEach(r => r.forEach(v => si(v)));
+
+  // Build worksheet XML
+  const colLetter = n => {
+    let s = '';
+    while (n >= 0) { s = String.fromCharCode(65 + (n % 26)) + s; n = Math.floor(n/26) - 1; }
+    return s;
+  };
+
+  let wsXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+<sheetData>`;
+
+  rows.forEach((row, ri) => {
+    wsXml += `<row r="${ri+1}">`;
+    row.forEach((val, ci) => {
+      const addr = `${colLetter(ci)}${ri+1}`;
+      const num  = typeof val === 'number' && !isNaN(val);
+      if (num) {
+        wsXml += `<c r="${addr}"><v>${val}</v></c>`;
+      } else {
+        wsXml += `<c r="${addr}" t="s"><v>${si(val)}</v></c>`;
+      }
+    });
+    wsXml += `</row>`;
+  });
+  wsXml += `</sheetData></worksheet>`;
+
+  // Shared strings XML
+  const ssXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="${strings.length}" uniqueCount="${strings.length}">
+${strings.map(s=>`<si><t xml:space="preserve">${xesc(s)}</t></si>`).join('')}
+</sst>`;
+
+  // Workbook XML
+  const wbXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+  xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+<sheets><sheet name="Members" sheetId="1" r:id="rId1"/></sheets>
+</workbook>`;
+
+  // Relationships
+  const wbRels = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>
+<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="sharedStrings.xml"/>
+</Relationships>`;
+
+  const dotRels = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>
+</Relationships>`;
+
+  const contentTypes = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+<Default Extension="xml"  ContentType="application/xml"/>
+<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>
+<Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>
+<Override PartName="/xl/sharedStrings.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/>
+</Types>`;
+
+  // Build ZIP (minimal, no compression — stored mode)
+  const files = [
+    { name: '[Content_Types].xml',          data: enc(contentTypes) },
+    { name: '_rels/.rels',                  data: enc(dotRels)      },
+    { name: 'xl/workbook.xml',              data: enc(wbXml)        },
+    { name: 'xl/_rels/workbook.xml.rels',   data: enc(wbRels)       },
+    { name: 'xl/worksheets/sheet1.xml',     data: enc(wsXml)        },
+    { name: 'xl/sharedStrings.xml',         data: enc(ssXml)        },
+  ];
+
+  return new Blob([makeZip(files)], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  });
+}
+
+// Build a ZIP archive (STORED, no compression)
+function makeZip(files) {
+  const u32le = (n) => [n&0xff,(n>>8)&0xff,(n>>16)&0xff,(n>>24)&0xff];
+  const u16le = (n) => [n&0xff,(n>>8)&0xff];
+
+  function crc32(buf) {
+    const tbl = [];
+    for (let i=0; i<256; i++) {
+      let c=i;
+      for (let j=0; j<8; j++) c = (c&1) ? (0xEDB88320^(c>>>1)) : (c>>>1);
+      tbl[i]=c;
+    }
+    let crc=0xFFFFFFFF;
+    for (let i=0; i<buf.length; i++) crc = tbl[(crc^buf[i])&0xff]^(crc>>>8);
+    return (crc^0xFFFFFFFF)>>>0;
+  }
+
+  const nameEnc  = s => new TextEncoder().encode(s);
+  const parts    = [];
+  const central  = [];
+  let   offset   = 0;
+
+  for (const f of files) {
+    const name   = nameEnc(f.name);
+    const data   = f.data;
+    const crc    = crc32(data);
+    const size   = data.length;
+
+    // Local file header
+    const lhdr = [
+      0x50,0x4B,0x03,0x04,   // signature
+      0x14,0x00,              // version needed
+      0x00,0x00,              // flags
+      0x00,0x00,              // compression (STORED)
+      0x00,0x00,0x00,0x00,   // mod time/date
+      ...u32le(crc),
+      ...u32le(size),
+      ...u32le(size),
+      ...u16le(name.length),
+      0x00,0x00,             // extra length
+      ...name
+    ];
+
+    // Central directory entry
+    const cdhr = [
+      0x50,0x4B,0x01,0x02,   // signature
+      0x14,0x00,0x14,0x00,   // version made by / needed
+      0x00,0x00,0x00,0x00,   // flags, compression
+      0x00,0x00,0x00,0x00,   // mod time/date
+      ...u32le(crc),
+      ...u32le(size),
+      ...u32le(size),
+      ...u16le(name.length),
+      0x00,0x00,             // extra length
+      0x00,0x00,             // comment length
+      0x00,0x00,0x00,0x00,   // disk start, internal attr
+      0x00,0x00,0x00,0x00,   // external attr
+      ...u32le(offset),      // local header offset
+      ...name
+    ];
+
+    parts.push(new Uint8Array(lhdr), data);
+    central.push(new Uint8Array(cdhr));
+    offset += lhdr.length + size;
+  }
+
+  const cdOffset = offset;
+  const cdSize   = central.reduce((s,c)=>s+c.length,0);
+
+  // End of central directory record
+  const eocd = [
+    0x50,0x4B,0x05,0x06,      // signature
+    0x00,0x00,0x00,0x00,      // disk numbers
+    ...u16le(files.length),
+    ...u16le(files.length),
+    ...u32le(cdSize),
+    ...u32le(cdOffset),
+    0x00,0x00                  // comment length
+  ];
+
+  const all   = [...parts, ...central, new Uint8Array(eocd)];
+  const total = all.reduce((s,a)=>s+a.length,0);
+  const out   = new Uint8Array(total);
+  let   pos   = 0;
+  for (const a of all) { out.set(a, pos); pos += a.length; }
+  return out;
+}
+
+async function doExportAndMark() {
+  await doExport();
+  await dbP('meta', { k:'last_backup', v: Date.now() });
+}
+
+async function importExcel(event) {
+  const file = event.target.files[0];
+  event.target.value = '';
+  if (!file) return;
+  if (!file.name.endsWith('.csv')) {
+    toast('⚠️ Please import a CSV file. Open your exported .xlsx in Excel and Save As CSV first.');
+    return;
+  }
+  toast('📥 Reading CSV...');
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    try {
+      const text = e.target.result.replace(/^\uFEFF/,'');
+      const lines = text.split(/\r?\n/).filter(l=>l.trim());
+      if (lines.length < 2) { toast('⚠️ No data found in file'); return; }
+      const parseCSV = line => {
+        const res=[]; let cur='', inQ=false;
+        for (let i=0;i<line.length;i++){
+          const c=line[i];
+          if(c==='"'){inQ=!inQ;}
+          else if(c===','&&!inQ){res.push(cur.trim());cur='';}
+          else cur+=c;
+        }
+        res.push(cur.trim());
+        return res.map(s=>s.replace(/^"|"$/g,'').replace(/""/g,'"'));
+      };
+      const headers = parseCSV(lines[0]).map(h=>h.trim());
+      const idx = h => headers.findIndex(x=>x.toLowerCase()===h.toLowerCase());
+      let added=0, skipped=0;
+      for (let i=1;i<lines.length;i++){
+        const cols = parseCSV(lines[i]);
+        const get  = h => (cols[idx(h)]||'').trim();
+        const name=get('Name'), phone=get('Phone');
+        if(!name||!phone){skipped++;continue;}
+        const parseDate = v => {
+          if(!v) return '';
+          const mo={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+          const m2=v.match(/(\d{1,2})[-\/\s]([A-Za-z]+)[-\/\s](\d{4})/);
+          if(m2&&mo[m2[2].toLowerCase().slice(0,3)]!==undefined)
+            return new Date(+m2[3],mo[m2[2].toLowerCase().slice(0,3)],+m2[1]).toISOString().split('T')[0];
+          const d2=new Date(v);
+          return isNaN(d2)?'':d2.toISOString().split('T')[0];
+        };
+        const reg=await nextReg();
+        await dbP('members',{
+          regNo:reg,name,phone,
+          joinDate:parseDate(get('Join Date')),
+          renewDate:parseDate(get('Last Renewed')||get('Join Date')),
+          validTill:parseDate(get('Valid Till')||get('Expiry')),
+          paidStatus:(get('Status')||get('Paid Status')||'Paid').includes('Paid')?'Paid':'Expiring',
+          plan:parseInt(get('Plan (Months)'))||null,
+          photo:null,lastSmsSent:null,expiredSmsSent:false,
+          createdAt:new Date().toISOString()
+        });
+        added++;
+      }
+      await load(); renderM(); refreshDash(); updateBadge();
+      toast(`✅ Imported ${added} members${skipped?', skipped '+skipped:''}`);
+    } catch(err) {
+      toast('❌ Import failed: '+err.message);
+    }
+  };
+  reader.readAsText(file,'utf-8');
+}
+
+/* ═══════════════════════════════════
+   DELETE / CLEAR
+═══════════════════════════════════ */
+function confirmDel(id) {
+  showC('Delete Member', 'Permanently delete this member?', async () => {
+    await dbD('members', id);
+    toast('🗑️ Member deleted');
+    closeOv('ov-det');
+    await load(); renderM(); refreshDash(); updateBadge();
+  });
+}
+function confirmClear() {
+  showC('Clear ALL Data', 'Every member will be permanently deleted.\nAre you sure?', async () => {
+    for (const m of await dbA('members')) await dbD('members', m.id);
+    members = [];
+    toast('🗑️ All data cleared');
+    renderM(); refreshDash(); updateBadge();
+  });
+}
+
+/* ═══════════════════════════════════
+   DEMO DATA
+═══════════════════════════════════ */
+async function addDemo() {
+  const demos = [
+    { name:'Arjun Sharma',    phone:'9876543210', plan:3,  paidStatus:'Paid',     off:60  },
+    { name:'Priya Nair',      phone:'9812345678', plan:1,  paidStatus:'Expiring', off:2   },
+    { name:'Rohit Verma',     phone:'9898989898', plan:6,  paidStatus:'Paid',     off:140 },
+    { name:'Sneha Kulkarni',  phone:'9001234567', plan:12, paidStatus:'Expired',  off:-5  },
+    { name:'Dev Patel',       phone:'9123456780', plan:1,  paidStatus:'Expiring', off:1   },
+  ];
+  for (const x of demos) {
+    const reg = await nextReg();
+    const exp = new Date(); exp.setDate(exp.getDate() + x.off);
+    const jo  = new Date(); jo.setDate(jo.getDate() - pdays[x.plan] + x.off);
+    await dbP('members', {
+      regNo:reg, name:x.name, phone:x.phone,
+      joinDate:  jo.toISOString().split('T')[0],
+      validTill: exp.toISOString().split('T')[0],
+      paidStatus:x.paidStatus, plan:x.plan,
+      photo:null, lastSmsSent:null, expiredSmsSent:false,
+      createdAt: new Date().toISOString()
+    });
+  }
+  toast('🧪 5 demo members added!');
+  await load(); renderM(); refreshDash(); updateBadge();
+}
+
+/* ═══════════════════════════════════
+   BACKUP REMINDER
+═══════════════════════════════════ */
+async function checkBackupReminder() {
+  const lastRec  = await dbG('meta','last_backup');
+  const lastWRec = await dbG('meta','last_warn');
+  const last    = lastRec  ? lastRec.v  : null;
+  const lastWrn = lastWRec ? lastWRec.v : null;
+  const now     = Date.now();
+  if (!members.length) return;
+  const daysSince  = last    ? (now - +last)   / 86400000 : 999;
+  const hrsSinceWrn = lastWrn ? (now - +lastWrn)/ 3600000  : 999;
+  if (daysSince > 7 && hrsSinceWrn > 23) {
+    await dbP('meta', { k:'last_warn', v: now });
+    const b = document.createElement('div');
+    b.style.cssText = `
+      position:fixed;bottom:24px;left:8px;right:8px;
+      background:#1a1000;border:1px solid var(--or);border-radius:10px;
+      padding:11px 13px;z-index:90;display:flex;align-items:center;gap:9px;
+      box-shadow:0 4px 18px rgba(0,0,0,.7);animation:fadeUp .3s ease;
+    `;
+    b.innerHTML = `
+      <div style="font-size:20px">⚠️</div>
+      <div style="flex:1">
+        <div style="font-weight:700;font-size:13px;color:var(--or)">Backup Overdue!</div>
+        <div style="font-size:11px;color:var(--tx2);margin-top:2px">No backup in ${Math.floor(daysSince)} days. Export now!</div>
+      </div>
+      <button onclick="doExportAndMark();this.closest('div[style]').remove()"
+        style="background:var(--or);color:#000;border:none;border-radius:6px;padding:7px 10px;font-weight:700;font-size:12px;cursor:pointer">
+        Backup
+      </button>
+      <span onclick="this.closest('div[style]').remove()" style="color:var(--tx3);font-size:18px;cursor:pointer;padding:2px">✕</span>`;
+    document.body.appendChild(b);
+  }
+}
+
+/* ═══════════════════════════════════
+   OVERLAY HELPERS
+═══════════════════════════════════ */
+function openOv(id)  { document.getElementById(id).classList.add('open'); }
+function closeOv(id) { document.getElementById(id).classList.remove('open'); }
+function bgC(e, id)  { if (e.target === document.getElementById(id)) closeOv(id); }
+
+let _cb = null;
+function showC(t, m, cb) {
+  document.getElementById('ctit').textContent = t;
+  document.getElementById('cmsg').textContent = m;
+  _cb = cb;
+  document.getElementById('cbg').classList.add('on');
+  document.getElementById('cbox').classList.add('on');
+  document.getElementById('cok').onclick = () => { closeC(); _cb && _cb(); };
+}
+function closeC() {
+  document.getElementById('cbg').classList.remove('on');
+  document.getElementById('cbox').classList.remove('on');
+}
+
+/* ═══════════════════════════════════
+   TOAST
+═══════════════════════════════════ */
+function toast(msg, dur = 2800) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('on');
+  setTimeout(() => t.classList.remove('on'), dur);
+}
+
+/* ═══════════════════════════════════
+   PHOTO LIGHTBOX
+═══════════════════════════════════ */
+function openLB(src) {
+  document.getElementById('lb-img').src = src;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLB() {
+  document.getElementById('lightbox').classList.remove('open');
+}
+
+/* ═══════════════════════════════════
+   INIT
+═══════════════════════════════════ */
+async function init() {
+  await openDB();
+  await load();
+  await autoUpdateStatuses();
+  await load();
+  refreshDash();
+  setTimeout(() => checkReminders(false), 1500);
+  setTimeout(() => checkBackupReminder(),  3000);
+}
+init();
+
+/* ═══════════════════════════════════
+   PWA — SERVICE WORKER + INSTALL
+═══════════════════════════════════ */
+
+// Install prompt — show banner when Chrome fires beforeinstallprompt
+let _deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  _deferredPrompt = e;
+  showInstallBanner();
+});
+
+function showInstallBanner() {
+  if (document.getElementById('install-banner')) return;
+  // Don't show if already installed (standalone mode)
+  if (window.matchMedia('(display-mode: standalone)').matches) return;
+
+  const banner = document.createElement('div');
+  banner.id = 'install-banner';
+  banner.style.cssText = `
+    position:fixed; bottom:20px; left:12px; right:12px;
+    background:linear-gradient(135deg,#1a0a00,#2a1200);
+    border:1px solid #ff4500; border-radius:14px;
+    padding:14px 16px; z-index:9999;
+    display:flex; align-items:center; gap:12px;
+    box-shadow:0 4px 24px rgba(255,69,0,0.3);
+    animation: slideUp .3s ease;
+  `;
+  banner.innerHTML = `
+    <div style="font-size:30px;flex-shrink:0">💪</div>
+    <div style="flex:1">
+      <div style="font-weight:700;font-size:14px;color:#fff">Install PowerFlex Gym</div>
+      <div style="font-size:12px;color:#999;margin-top:2px">Add to home screen for offline use</div>
+    </div>
+    <button onclick="doInstall()" style="
+      background:linear-gradient(135deg,#ff4500,#ff7300);
+      color:white;border:none;border-radius:8px;
+      padding:9px 16px;font-weight:700;font-size:13px;cursor:pointer">
+      Install
+    </button>
+    <span onclick="document.getElementById('install-banner').remove()"
+      style="color:#555;font-size:20px;cursor:pointer;padding:4px;flex-shrink:0">✕</span>
+  `;
+  document.body.appendChild(banner);
+}
+
+function doInstall() {
+  if (!_deferredPrompt) return;
+  _deferredPrompt.prompt();
+  _deferredPrompt.userChoice.then(r => {
+    if (r.outcome === 'accepted') {
+      toast('✅ PowerFlex Gym installed!');
+    }
+    _deferredPrompt = null;
+    const b = document.getElementById('install-banner');
+    if (b) b.remove();
+  });
+}
+
+// If already in standalone (installed) mode — show green status in settings
+window.addEventListener('load', () => {
+  const isInstalled = window.matchMedia('(display-mode: standalone)').matches
+    || window.navigator.standalone === true;
+  const el = document.getElementById('pwa-status');
+  if (el) {
+    el.innerHTML = isInstalled
+      ? '<span style="color:var(--gn)">✅ Running as installed app</span>'
+      : '<span style="color:var(--or)">⚠️ Not installed — tap Install App below</span>';
+  }
+  const btn = document.getElementById('pwa-install-btn');
+  if (btn) btn.style.display = isInstalled ? 'none' : 'flex';
+});
+
+</script>
+</body>
+</html>
