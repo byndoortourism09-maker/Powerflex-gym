@@ -489,6 +489,7 @@ html, body {
 .ik    { font-size:10px; font-weight:700; color:var(--tx3); text-transform:uppercase; letter-spacing:.7px; }
 .iv    { font-size:13px; font-weight:600; }
 .dact  { padding:0 16px 8px; display:flex; flex-direction:column; gap:8px; }
+.frow  { display:flex; gap:10px; }
 .drow  { display:flex; gap:8px; }
 
 /* ═══════════════════════════════════
@@ -869,6 +870,16 @@ html, body {
         <div class="fl">Phone Number *</div>
         <input class="fi" type="tel" id="fp" placeholder="+91 98765 43210">
       </div>
+      <div class="frow">
+        <div class="fg" style="flex:1">
+          <div class="fl">Fees (₹)</div>
+          <input class="fi" type="number" id="ff" placeholder="e.g. 500" min="0">
+        </div>
+        <div class="fg" style="flex:1">
+          <div class="fl">Old Reg No <span style="color:var(--tx3);font-size:9px">(optional)</span></div>
+          <input class="fi" type="text" id="fold" placeholder="e.g. GYM-001">
+        </div>
+      </div>
       <div class="fg">
         <div class="fl">Join Date <span style="color:var(--tx3);font-size:9px">(fixed forever)</span></div>
         <input class="fi" type="date" id="fj">
@@ -1210,6 +1221,8 @@ function openAdd() {
   document.getElementById('ftit').textContent = 'Add Member';
   document.getElementById('fn').value = '';
   document.getElementById('fp').value = '';
+  document.getElementById('ff').value = '';
+  document.getElementById('fold').value = '';
   document.getElementById('fj').value = toStr();
   document.getElementById('fr').value = toStr();
   document.getElementById('fe').value = '';
@@ -1226,6 +1239,8 @@ async function openEdit(id) {
   document.getElementById('ftit').textContent = 'Edit / Renew Member';
   document.getElementById('fn').value  = m.name;
   document.getElementById('fp').value  = m.phone;
+  document.getElementById('ff').value  = m.fees || '';
+  document.getElementById('fold').value = m.oldReg || '';
   document.getElementById('fj').value  = m.joinDate || '';
   document.getElementById('fr').value  = m.renewDate || m.joinDate || toStr();
   document.getElementById('fe').value  = m.validTill || '';
@@ -1242,6 +1257,8 @@ async function openEdit(id) {
 async function saveM() {
   const name   = document.getElementById('fn').value.trim();
   const phone  = document.getElementById('fp').value.trim();
+  const fees   = parseFloat(document.getElementById('ff').value) || 0;
+  const oldReg = document.getElementById('fold').value.trim();
   const join   = document.getElementById('fj').value || toStr();
   const renew  = document.getElementById('fr').value || toStr();
   const expiry = document.getElementById('fe').value;
@@ -1253,14 +1270,14 @@ async function saveM() {
   if (editId) {
     const m = members.find(x => x.id === editId);
     const newRenewDate = (paid === 'Paid' && planSel) ? renew : (m.renewDate || m.joinDate);
-    Object.assign(m, { name, phone, joinDate:join, renewDate:newRenewDate, validTill:expiry, paidStatus:paid, plan:planSel, photo:photoB64 });
+    Object.assign(m, { name, phone, fees, oldReg, joinDate:join, renewDate:newRenewDate, validTill:expiry, paidStatus:paid, plan:planSel, photo:photoB64 });
     if (paid === 'Paid') { m.lastSmsSent = null; m.expiredSmsSent = false; }
     await dbP('members', m);
     toast('✅ Member updated');
   } else {
     const reg = await nextReg();
     await dbP('members', {
-      regNo:reg, name, phone, joinDate:join, renewDate:renew, validTill:expiry,
+      regNo:reg, name, phone, fees, oldReg, joinDate:join, renewDate:renew, validTill:expiry,
       paidStatus:paid, plan:planSel, photo:photoB64,
       lastSmsSent:null, expiredSmsSent:false,
       createdAt:new Date().toISOString()
@@ -1327,7 +1344,9 @@ async function openDet(id) {
 
   document.getElementById('dgrd').innerHTML = `
     <div class="ic"><div class="ik">Phone</div><div class="iv">📞 ${esc(m.phone)}</div></div>
-    <div class="ic"><div class="ik">Join Date</div><div class="iv">${fmt(m.joinDate)}</div></div>
+    <div class="ic"><div class="ik">Fees</div><div class="iv">💰 ${m.fees ? '₹'+m.fees : 'N/A'}</div></div>
+    <div class="ic"><div class="ik">Join Date</div><div class="iv">📅 ${fmt(m.joinDate)}</div></div>
+    <div class="ic"><div class="ik">Old Reg No</div><div class="iv">🔖 ${esc(m.oldReg)||'—'}</div></div>
     <div class="ic"><div class="ik">Last Renewed</div><div class="iv">🔄 ${fmt(m.renewDate || m.joinDate)}</div></div>
     <div class="ic"><div class="ik">Valid Till</div><div class="iv" style="color:${dc}">📅 ${fmt(m.validTill)}</div></div>
     <div class="ic"><div class="ik">Days Left</div><div class="iv" style="color:${dc}">⏳ ${dStr}</div></div>
@@ -1491,9 +1510,13 @@ async function doExport() {
   if (!members.length) { toast('⚠️ No members to export'); return; }
 
   const rows = [
-    ['Reg No','Name','Phone','Join Date','Last Renewed','Plan (Months)','Valid Till','Days Left','Status'],
+    ['Reg No','Old Reg No','Name','Phone','Fees (₹)','Join Date','Last Renewed','Plan (Months)','Valid Till','Days Left','Status'],
     ...members.map(m => [
-      m.regNo, m.name, m.phone,
+      m.regNo,
+      m.oldReg || '',
+      m.name,
+      m.phone,
+      m.fees || 0,
       fmt(m.joinDate),
       fmt(m.renewDate || m.joinDate),
       m.plan || 'Custom',
@@ -1563,10 +1586,24 @@ function buildXlsx(rows) {
 
   let wsXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+<sheetFormatPr defaultRowHeight="16" customHeight="1"/>
+<cols>
+  <col min="1" max="1" width="12" customWidth="1"/>
+  <col min="2" max="2" width="14" customWidth="1"/>
+  <col min="3" max="3" width="22" customWidth="1"/>
+  <col min="4" max="4" width="16" customWidth="1"/>
+  <col min="5" max="5" width="12" customWidth="1"/>
+  <col min="6" max="6" width="14" customWidth="1"/>
+  <col min="7" max="7" width="14" customWidth="1"/>
+  <col min="8" max="8" width="14" customWidth="1"/>
+  <col min="9" max="9" width="14" customWidth="1"/>
+  <col min="10" max="10" width="10" customWidth="1"/>
+  <col min="11" max="11" width="12" customWidth="1"/>
+</cols>
 <sheetData>`;
 
   rows.forEach((row, ri) => {
-    wsXml += `<row r="${ri+1}">`;
+    wsXml += `<row r="${ri+1}" ht="16" customHeight="1">`;
     row.forEach((val, ci) => {
       const addr = `${colLetter(ci)}${ri+1}`;
       const num  = typeof val === 'number' && !isNaN(val);
