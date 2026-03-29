@@ -1911,9 +1911,60 @@ async function checkBackupReminder() {
 /* ═══════════════════════════════════
    OVERLAY HELPERS
 ═══════════════════════════════════ */
-function openOv(id)  { document.getElementById(id).classList.add('open'); }
-function closeOv(id) { document.getElementById(id).classList.remove('open'); }
-function bgC(e, id)  { if (e.target === document.getElementById(id)) closeOv(id); }
+/* ═══════════════════════════════════
+   OVERLAY HELPERS — with Android back button support
+   Every openOv() pushes a history state.
+   Android back button fires popstate → closes top overlay instead of exiting.
+═══════════════════════════════════ */
+function openOv(id) {
+  document.getElementById(id).classList.add('open');
+  history.pushState({ overlay: id }, '');
+}
+function closeOv(id) {
+  const el = document.getElementById(id);
+  if (!el.classList.contains('open')) return;
+  el.classList.remove('open');
+  // If the top history state is for this overlay, go back
+  if (history.state && history.state.overlay === id) {
+    history.back();
+  }
+}
+function closeTopOv() {
+  // Close whichever overlay is currently open (called by popstate)
+  const openOvs = ['ov-form','ov-det'];
+  for (const id of openOvs) {
+    const el = document.getElementById(id);
+    if (el && el.classList.contains('open')) {
+      el.classList.remove('open');
+      return true;
+    }
+  }
+  // Also close lightbox if open
+  const lb = document.getElementById('lightbox');
+  if (lb && lb.classList.contains('open')) {
+    lb.classList.remove('open');
+    return true;
+  }
+  // Close confirm dialog if open
+  const cbg = document.getElementById('cbg');
+  if (cbg && cbg.classList.contains('on')) {
+    closeC();
+    return true;
+  }
+  return false;
+}
+function bgC(e, id) { if (e.target === document.getElementById(id)) closeOv(id); }
+
+// Intercept Android back button via popstate
+window.addEventListener('popstate', e => {
+  const closed = closeTopOv();
+  if (!closed) {
+    // Nothing open — let default back happen (exits app)
+  }
+});
+
+// Push an initial state so the first back press hits popstate before exiting
+history.replaceState({ base: true }, '');
 
 let _cb = null;
 function showC(t, m, cb) {
@@ -1945,9 +1996,13 @@ function toast(msg, dur = 2800) {
 function openLB(src) {
   document.getElementById('lb-img').src = src;
   document.getElementById('lightbox').classList.add('open');
+  history.pushState({ overlay: 'lightbox' }, '');
 }
 function closeLB() {
-  document.getElementById('lightbox').classList.remove('open');
+  const el = document.getElementById('lightbox');
+  if (!el.classList.contains('open')) return;
+  el.classList.remove('open');
+  if (history.state && history.state.overlay === 'lightbox') history.back();
 }
 
 /* ═══════════════════════════════════
