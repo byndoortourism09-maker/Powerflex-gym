@@ -1251,7 +1251,7 @@ async function openEdit(id) {
   const ri = document.getElementById('renew-info');
   ri.style.display = 'block';
   ri.innerHTML = `ℹ️ <b>Joining Date:</b> ${fmt(m.joinDate)} (fixed forever)<br><b>Last Renewed:</b> ${fmt(m.renewDate || m.joinDate)}<br>To renew: update <b>Renew Date</b> to today, pick a plan, set status <b>Paid</b>.`;
-  closeOv('ov-det'); openOv('ov-form');
+  closeOvSilent('ov-det'); openOv('ov-form');
 }
 
 async function saveM() {
@@ -1928,6 +1928,12 @@ function closeOv(id) {
   if (history.state && history.state.overlay === id) {
     history.back();
   }
+}
+// Silent close — just removes the class, does NOT touch history.
+// Use this when immediately opening another overlay (e.g. det → form),
+// so history.back() in closeOv doesn't undo the next openOv.
+function closeOvSilent(id) {
+  document.getElementById(id).classList.remove('open');
 }
 function closeTopOv() {
   // Close whichever overlay is currently open (called by popstate)
